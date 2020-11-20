@@ -56,6 +56,7 @@ public class ReadServiceImpl implements ReadService {
             StringBuffer names = new StringBuffer();
             int length = readPicFiles.length;
             for (int i=0; i<length; i++){
+                log.info("新增阅读信息开始上传截图");
                 MultipartFile file = readPicFiles[i];
                 if (!file.isEmpty()){
                     String uploadFileName = fileClient.uploadFile(file);
@@ -65,7 +66,10 @@ public class ReadServiceImpl implements ReadService {
 
             String screenshotNames = names.toString();
             if (StringUtils.isNotEmpty(screenshotNames)){
-                addReadDTO.setScreenshotName(screenshotNames);
+                // 截掉最后一个逗号
+                String substring = screenshotNames.substring(0, screenshotNames.length() - 1);
+                log.info("新增后的阅读截图名：{}", substring);
+                addReadDTO.setScreenshotName(substring);
             }
         }
 
@@ -98,10 +102,12 @@ public class ReadServiceImpl implements ReadService {
                     names.append(uploadFileName).append(",");
                 }
             }
-
             String screenshotNames = names.toString();
             if (StringUtils.isNotEmpty(screenshotNames)){
-                updateReadDTO.setScreenshotName(screenshotNames);
+                // 截掉最后一个逗号
+                String substring = screenshotNames.substring(0, screenshotNames.length() - 1);
+                log.info("更新后的阅读截图名：{}", substring);
+                updateReadDTO.setScreenshotName(substring);
             }
         }
 
