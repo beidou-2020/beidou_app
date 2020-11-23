@@ -94,15 +94,15 @@
 	              <a title="删除" onclick="member_del(this,'${item.id}')" href="javascript:;">
 	                <i class="layui-icon">&#xe640;</i>
 	              </a>
-                    <%--只能挂起待执行的--%>
-                    <c:if test="${item.planStatus == 0}">
+                    <%--只能挂起执行中的--%>
+                    <c:if test="${item.planStatus == 1}">
                         <a onclick="member_stop(this,'${item.id}')" href="javascript:;"  title="挂起">
                             <i class="layui-icon">&#xe616;</i>
                         </a>
                     </c:if>
-                    <%--只能重启挂起的计划--%>
-                    <c:if test="${item.planStatus == 3}">
-                        <a onclick="member_turn_on(this,'${item.id}')" href="javascript:;"  title="重启">
+                    <%--只能开启待执行的计划--%>
+                    <c:if test="${item.planStatus == 3 || item.planStatus == 0}">
+                        <a onclick="member_turn_on(this,'${item.id}')" href="javascript:;"  title="开启">
                             <i class="layui-icon">&#xe61f;</i>
                         </a>
                     </c:if>
@@ -261,7 +261,7 @@ layui.use('element', function(){
               });
           });
       }
-      /*计划-重启*/
+      /*计划-开启*/
       function member_turn_on(obj,id){
           layer.confirm('确认要重启吗？',function(){
               //alert(id);
