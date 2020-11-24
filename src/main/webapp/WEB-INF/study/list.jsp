@@ -312,7 +312,6 @@ layui.use('element', function(){
                 url: "${beidou}/study/batchDelete?idListStr=" + data,
                 success: function(data){
                     if(data.code == 0){
-                        alert(data.code);
                         layer.msg('操作成功', {icon: 1});
                         window.parent.location.reload();//刷新父页面
                     }
