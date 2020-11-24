@@ -202,4 +202,9 @@ public class StudyServiceImpl implements StudyService {
     public Integer trunOnStudy(Long id) {
         return studyClient.trunOnStudy(id);
     }
+
+    @Override
+    public Integer batchDelete(String idListStr) {
+        return studyClient.batchDelete(idListStr);
+    }
 }

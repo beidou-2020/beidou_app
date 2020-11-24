@@ -68,6 +68,9 @@ public class StudyClient {
     @Value("${study.trunOnStudy}")
     private String trunOnUrl;
 
+    @Value("${study.batchDelete}")
+    private String batchDeleteUrl;
+
     /**
      * 学习计划列表
      */
@@ -345,6 +348,36 @@ public class StudyClient {
             return data;
         }catch (Exception ex){
             throw new HttpErrorException("调用study-server服务的trunOnStudy方法异常", ex);
+        }
+    }
+
+    /**
+     * 批量删除计划
+     * @param idListStr
+     * @return
+     */
+    public Integer batchDelete(String idListStr){
+        try{
+            ResponseEntity<Result> responseEntity = restTemplate.
+                    postForEntity(batchDeleteUrl + idListStr, null, Result.class);
+            log.info("调用study-server服务的batchDelete方法的返回值：{}", JSONObject.toJSONString(responseEntity));
+            if (Objects.isNull(responseEntity)){
+                return 0;
+            }
+
+            Result body = responseEntity.getBody();
+            if (Objects.isNull(body)){
+                return 0;
+            }
+            Integer code = body.getCode();
+            if (Objects.isNull(code) || code != 0){
+                return 0;
+            }
+
+            Integer data = (Integer) body.getData();
+            return data;
+        }catch (Exception ex){
+            throw new HttpErrorException("调用study-server服务的batchDelete方法异常", ex);
         }
     }
 

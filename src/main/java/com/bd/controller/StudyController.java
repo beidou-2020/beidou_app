@@ -2,6 +2,7 @@ package com.bd.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bd.controller.common.Result;
+import com.bd.entitys.enumerate.ResultCode;
 import com.bd.entitys.model.TZxzStudy;
 import com.bd.entitys.parame.AddStudyParam;
 import com.bd.entitys.parame.PageParam;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.Objects;
@@ -172,4 +174,21 @@ public class StudyController {
         Integer result = studyService.trunOnStudy(id);
         return Result.ok(result);
     }
+
+    /**
+     * 批量删除计划
+     * @param idListStr
+     * @return
+     */
+    @PostMapping("/batchDelete")
+    @ResponseBody
+    public Result batchDelete(@RequestParam(name = "idListStr") String idListStr){
+        // 参数不能为空
+        if (StringUtils.isEmpty(idListStr)){
+            return Result.fail(ResultCode.PARAM_ERROR.code(), ResultCode.PARAM_ERROR.msg());
+        }
+        Integer resultData = studyService.batchDelete(idListStr);
+        return Result.ok(resultData);
+    }
+
 }

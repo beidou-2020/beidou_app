@@ -45,7 +45,7 @@
           <button type="button" class="layui-btn" id="syncTaskStatus"><i class="layui-icon">&#xe669;</i>同步</button>
         <span class="x-right" style="line-height:40px">共有数据：${total } 条</span>
       </xblock>
-      <table class="layui-table">
+      <table id="studyList" class="layui-table">
         <thead>
           <tr>
             <th>
@@ -63,7 +63,7 @@
         <c:forEach var="item" items="${list }" varStatus="num">
         	<tr>
 	            <td>
-	              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+	              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='${item.id}'><i class="layui-icon">&#xe605;</i></div>
 	            </td>
 	            <td>${num.count }</td>
 	            <td>${item.title }</td>
@@ -302,14 +302,22 @@ layui.use('element', function(){
 
 
 
-      function delAll (argument) {
-
+      /*批量删除*/
+      function delAll () {
         var data = tableCheck.getData();
-  
-        layer.confirm('确认要删除吗？'+data,function(index){
+        layer.confirm('确认要批量删除吗？', function(){
             //捉到所有被选中的，发异步进行删除
-            layer.msg('删除成功', {icon: 1});
-            $(".layui-form-checked").not('.header').parents('tr').remove();
+            $.ajax({
+                type: "post",
+                url: "${beidou}/study/batchDelete?idListStr=" + data,
+                success: function(data){
+                    if(data.code == 0){
+                        alert(data.code);
+                        layer.msg('操作成功', {icon: 1});
+                        window.parent.location.reload();//刷新父页面
+                    }
+                }
+            });
         });
       }
 </script>
