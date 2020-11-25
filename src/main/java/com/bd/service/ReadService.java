@@ -57,5 +57,11 @@ public interface ReadService {
      */
     Integer countReadNumber();
 
+    /**
+     * 批量删除阅读信息
+     * @return
+     */
+    Integer batchDelete(String idListStr);
+
 
 }

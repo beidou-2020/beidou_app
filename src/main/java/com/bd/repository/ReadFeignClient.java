@@ -67,5 +67,9 @@ public interface ReadFeignClient {
     @ResponseBody
     Result countReadNumber();
 
+    @PostMapping("/batchDelete")
+    @ResponseBody
+    Result batchDelete(@RequestParam("idListStr") String idListStr);
+
 
 }

@@ -13,7 +13,6 @@ public enum ResultCode {
     ERROR(99, "服务端错误"),
     REQUEST_SUCCESS(200,"请求成功"),
     SERVER_ERROR(500,"服务器异常"),
-    RESPONSE__NULL(506, "下游服务返回为空"),
     RESPONSE_BODY_NULL(507, "下游服务返回body体为空"),
     RESPONSE_CODE_NULL(508, "下游服务返回code为空"),
     RESPONSE_NULL(509, "下游服务response为空"),

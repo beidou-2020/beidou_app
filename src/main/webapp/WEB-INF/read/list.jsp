@@ -62,7 +62,7 @@
         <c:forEach var="item" items="${list }" varStatus="num">
         	<tr>
 	            <td>
-	              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+	              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='${item.id}'><i class="layui-icon">&#xe605;</i></div>
 	            </td>
 	            <td>${num.count }</td>
 	            <td>${item.bookName }</td>
@@ -190,26 +190,29 @@ layui.use('element', function(){
 	  				url:"${beidou }/read/deleteById",
 	  				data:{"id":id},
 	  				success:function(data) {
-	  					//alert(data);
+
 	  				}
 	  			});
-              $(obj).parents("tr").remove();
               layer.msg('已删除!',{icon:1,time:1000});
               window.location.reload();//刷新父页面
           });
           
       }
 
-
-
+      /*批量删除阅读信息*/
       function delAll (argument) {
-
         var data = tableCheck.getData();
-  
-        layer.confirm('确认要删除吗？'+data,function(index){
-            //捉到所有被选中的，发异步进行删除
-            layer.msg('删除成功', {icon: 1});
-            $(".layui-form-checked").not('.header').parents('tr').remove();
+        layer.confirm('确认要批量删除吗？',function(){
+            $.ajax({
+                type: "post",
+                url: "${beidou}/read/batchDelete?idListStr=" + data,
+                success: function(data){
+                    if(data.code == 0){
+                        layer.msg('操作成功', {icon: 1});
+                        window.parent.location.reload();//刷新父页面
+                    }
+                }
+            });
         });
       }
 </script>

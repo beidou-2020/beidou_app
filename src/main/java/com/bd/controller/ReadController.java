@@ -2,6 +2,8 @@ package com.bd.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bd.constant.FileConstant;
+import com.bd.controller.common.Result;
+import com.bd.entitys.enumerate.ResultCode;
 import com.bd.entitys.model.THistoricalReading;
 import com.bd.entitys.parame.AddReadParam;
 import com.bd.entitys.parame.PageParam;
@@ -9,12 +11,14 @@ import com.bd.entitys.parame.UpdateReadParam;
 import com.bd.entitys.query.ReadQuery;
 import com.bd.service.ReadService;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/read")
@@ -104,9 +108,30 @@ public class ReadController {
      * 删除阅读信息
      */
     @PostMapping(value = "/deleteById")
+    @ResponseBody
     public String deleteById(@RequestParam(name = "id", required = true) Long id) {
         THistoricalReading delete = readService.deleteById(id);
         return JSONObject.toJSONString(delete);
+    }
+
+    /**
+     * 批量删除
+     * @param idListStr
+     * @return
+     */
+    @PostMapping("/batchDelete")
+    @ResponseBody
+    public Result batchDelete(@RequestParam("idListStr") String idListStr){
+        // 参数不能为空
+        if (StringUtils.isEmpty(idListStr)){
+            return Result.fail(ResultCode.PARAM_ERROR.code(), ResultCode.PARAM_ERROR.msg());
+        }
+
+        Integer data = readService.batchDelete(idListStr);
+        if (Objects.isNull(data)) {
+            return Result.fail(ResultCode.RESPONSE_NULL.code(), ResultCode.RESPONSE_NULL.msg());
+        }
+        return Result.ok(data);
     }
 
 

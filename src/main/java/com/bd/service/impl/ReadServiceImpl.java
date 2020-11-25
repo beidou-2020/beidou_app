@@ -150,4 +150,19 @@ public class ReadServiceImpl implements ReadService {
         Integer data = (Integer)result.getData();
         return data;
     }
+
+    @Override
+    public Integer batchDelete(String idListStr) {
+        Result result = readFeignClient.batchDelete(idListStr);
+        if (Objects.isNull(result)){
+            return null;
+        }
+
+        int code = result.getCode();
+        if (Objects.isNull(code) || code != 0){
+            return null;
+        }
+        Integer data = (Integer)result.getData();
+        return data;
+    }
 }
