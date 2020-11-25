@@ -43,4 +43,9 @@ public class AddReadDTO {
      * 阅读截图名(存储在文件服务器上的图片路径，多张图片名称之间用逗号分隔)
      */
     private String screenshotName;
+
+    /**
+     * 阅读内容分类
+     */
+    private Integer category;
 }

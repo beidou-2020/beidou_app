@@ -74,6 +74,20 @@
                   <span class="x-red">*</span>
               </div>
           </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>类别
+                </label>
+                <div class="layui-input-inline">
+                    <select name="category">
+                        <option value="1">养性</option>
+                        <option value="2">专业</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
           <div class="layui-form-item">
               <label class="layui-form-label">
                   <span class="x-red"></span>开始时间

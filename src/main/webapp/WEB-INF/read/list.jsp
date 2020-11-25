@@ -51,6 +51,7 @@
             </th>
             <th>序号</th>
             <th>书名</th>
+              <th>类别</th>
             <th>作者</th>
             <th>阅读开始时间</th>
             <th>阅读结束时间</th>
@@ -65,6 +66,14 @@
 	            </td>
 	            <td>${num.count }</td>
 	            <td>${item.bookName }</td>
+                <td>
+                    <c:if test="${item.category == 1}">
+                        养性
+                    </c:if>
+                    <c:if test="${item.category == 2}">
+                        专业
+                    </c:if>
+                </td>
 	            <td>${item.author }</td>
 	            <td>${item.begintime }</td>
 	            <td>${item.endtime }</td>

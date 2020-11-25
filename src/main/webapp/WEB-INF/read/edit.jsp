@@ -72,6 +72,20 @@
                   <span class="x-red">*</span>
               </div>
           </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red">*</span>类别
+                </label>
+                <div class="layui-input-inline">
+                    <select name="category">
+                        <option value="1" <c:if test="${readInfo.category == 1}">selected</c:if>>养性</option>
+                        <option value="2" <c:if test="${readInfo.category == 2}">selected</c:if>>专业</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
           <input type="hidden" id="beginTimeValue" value="${readInfo.begintime }">
           <input type="hidden" id="endTimeValue" value="${readInfo.endtime }">
           <div class="layui-form-item">
@@ -112,14 +126,14 @@
           </div>
           <div class="layui-form-item">
               <label class="layui-form-label">
-                  <span class="x-red"></span>作者
+                  <span class="x-red">*</span>作者
               </label>
               <div class="layui-input-inline">
                   <input type="text" id="author" name="author"
                   autocomplete="off" class="layui-input" value="${readInfo.author }">
               </div>
               <div class="layui-form-mid layui-word-aux">
-                  <span class="x-red"></span>
+                  <span class="x-red">*</span>
               </div>
           </div>
           <div class="layui-form-item layui-form-text">

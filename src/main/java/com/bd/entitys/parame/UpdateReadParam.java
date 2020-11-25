@@ -58,4 +58,10 @@ public class UpdateReadParam {
      * 阅读截图名(存储在文件服务器上的图片路径)
      */
     private String screenshotName;
+
+    /**
+     * 阅读内容分类
+     */
+    @NotNull(message = "添加阅读信息时内容分类不能为空")
+    private Integer category;
 }

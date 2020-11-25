@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -46,5 +48,11 @@ public class AddReadParam {
      * 附件
      */
     private MultipartFile[] readPicFiles;
+
+    /**
+     * 阅读内容分类
+     */
+    @NotNull(message = "添加阅读信息时内容分类不能为空")
+    private Integer category;
     
 }

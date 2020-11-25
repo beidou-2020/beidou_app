@@ -24,19 +24,29 @@
   <body>
     <div class="x-body">
         <form class="layui-form">
-          <input type="hidden" name="id" value="${readInfo.id }">	<!-- 主键ID -->
           <div class="layui-form-item">
               <label class="layui-form-label">
-                  <span class="x-red">*</span>书名
+                  <span class="x-red"></span>书名
               </label>
               <div class="layui-input-inline">
                   <input type="text" id="bookName" name="bookName" 
                   class="layui-input" value="${readInfo.bookName }" readonly="readonly">
               </div>
               <div class="layui-form-mid layui-word-aux">
-                  <span class="x-red">*</span>
+                  <span class="x-red"></span>
               </div>
           </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red"></span>类别
+                </label>
+                <div class="layui-input-inline">
+                    <select name="category">
+                        <option value="1" <c:if test="${readInfo.category == 1}">selected</c:if>>养性</option>
+                        <option value="2" <c:if test="${readInfo.category == 2}">selected</c:if>>专业</option>
+                    </select>
+                </div>
+            </div>
           <input type="hidden" id="beginTimeValue" value="${readInfo.begintime }">
           <input type="hidden" id="endTimeValue" value="${readInfo.endtime }">
           <div class="layui-form-item">
