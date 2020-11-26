@@ -57,4 +57,14 @@ public class TZxzStudy {
      * 计划状态：0待执行，1执行中，2已结束
      */
     private Integer planStatus;
+
+    /**
+     * 数据删除时间
+     */
+    private Date removetime;
+
+    /**
+     * 数据删除操作者
+     */
+    private Long removeUser;
 }

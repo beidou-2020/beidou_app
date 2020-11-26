@@ -30,7 +30,7 @@
         <div class="x-body">
             <xblock>
                 <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"> </i>批量恢复</button>
-                <span class="x-right" style="line-height:40px">共有数据：${total } 条</span>
+                <span class="x-right" style="line-height:40px">共有数据：${studyTotal } 条</span>
             </xblock>
             <table id="studyList" class="layui-table">
                 <thead>
@@ -41,12 +41,13 @@
                     </th>
                     <th>序号</th>
                     <th>主题</th>
+                    <th>计划终止时间</th>
                     <th>删除时间</th>
                     <th>删除人</th>
                     <th>操作</th>
                 </thead>
                 <tbody>
-                <c:forEach var="item" items="${list }" varStatus="num">
+                <c:forEach var="item" items="${studyList }" varStatus="num">
                     <tr>
                         <td>
                             <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='${item.id}'><i
@@ -54,11 +55,12 @@
                         </td>
                         <td>${num.count }</td>
                         <td>${item.title }</td>
-                        <td></td>
-                        <td></td>
+                        <td>${item.planEndtime }</td>
+                        <td>${item.removetime }</td>
+                        <td>${item.removeUser }</td>
                         <td class="td-manage">
-                            <a title="删除" onclick="member_del(this,'${item.id}')" href="javascript:;">
-                                <i class="layui-icon">&#xe640;</i>
+                            <a title="恢复" onclick="member_del(this,'${item.id}')" href="javascript:;">
+                                <i class="layui-icon">&#xe609;</i>
                             </a>
                         </td>
                     </tr>
@@ -70,20 +72,20 @@
             <div class="page">
                 <div>
                     <c:choose>
-                        <c:when test="${totalPage == 1}">
-                            <span class="current">${totalPage}</span>
+                        <c:when test="${studyTotalPage == 1}">
+                            <span class="current">${studyTotalPage}</span>
                         </c:when>
                         <c:when test="${totalPage == currPageNumber}">
-                            <a class="prev" href="${beidou }/study/list?currentPageNumber=${currPageNumber-1}">上一页</a>
+                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage-1}">上一页</a>
                         </c:when>
                         <c:when test="${currPageNumber<totalPage && currPageNumber>1}">
-                            <a class="prev" href="${beidou }/study/list?currentPageNumber=1">首页</a>
-                            <a class="prev" href="${beidou }/study/list?currentPageNumber=${currPageNumber-1}">上一页</a>
-                            <a class="prev" href="${beidou }/study/list?currentPageNumber=${currPageNumber+1}">下一页</a>
-                            <a class="prev" href="${beidou }/study/list?currentPageNumber=${totalPage}">尾页</a>
+                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=1">首页</a>
+                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage-1}">上一页</a>
+                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage+1}">下一页</a>
+                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyTotalPage}">尾页</a>
                         </c:when>
                         <c:otherwise>
-                            <a class="prev" href="${beidou }/study/list?currentPageNumber=${currPageNumber+1}">下一页</a>
+                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage+1}">下一页</a>
                         </c:otherwise>
                     </c:choose>
                 </div>

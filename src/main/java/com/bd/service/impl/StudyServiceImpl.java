@@ -48,6 +48,13 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
+    public PageInfo<TZxzStudy> pageFindByRemove(StudyQuery queryStudy, PageParam pageQuery) {
+        // valid_mark：0删除
+        queryStudy.setValidMark(0);
+        return studyClient.list(queryStudy, pageQuery);
+    }
+
+    @Override
     public TZxzStudy addStudyInfo(AddStudyParam param) {
         return studyClient.add(param);
     }

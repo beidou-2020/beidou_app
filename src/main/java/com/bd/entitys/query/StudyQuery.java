@@ -26,4 +26,9 @@ public class StudyQuery {
      * 计划结束时间
      */
     private String planEndtime;
+
+    /**
+     * 默认查询未删除的
+     */
+    private Integer validMark = 1;
 }

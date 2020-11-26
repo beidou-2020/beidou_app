@@ -80,6 +80,7 @@ public class StudyClient {
         param.put("items", queryStudy.getItems());
         param.put("planBegintime", queryStudy.getPlanBegintime());
         param.put("planEndtime", queryStudy.getPlanEndtime());
+        param.put("validMark", queryStudy.getValidMark());
         param.put("currentPageNumber", pageQuery.getCurrentPageNumber());
         param.put("pageSize", pageQuery.getPageSize());
 

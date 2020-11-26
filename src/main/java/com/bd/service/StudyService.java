@@ -23,6 +23,14 @@ public interface StudyService {
     PageInfo<TZxzStudy> pageFindByQuery(StudyQuery queryStudy, PageParam pageQuery);
 
     /**
+     * 分页查询已经被删除的数据列表
+     * @param queryStudy
+     * @param pageQuery
+     * @return
+     */
+    PageInfo<TZxzStudy> pageFindByRemove(StudyQuery queryStudy, PageParam pageQuery);
+
+    /**
      * 添加学习计划
      * @param param
      * @return
