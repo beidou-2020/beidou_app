@@ -180,7 +180,7 @@ layui.use('element', function(){
                   url: "${beidou}/read/timeOut/"+id,
                   success: function(data){
                       if (data.data == 1) {
-                          layer.msg('阅读已经暂停!',{icon: 1,time:1000});
+                          layer.msg('阅读已经暂停!',{icon: 1,time:3000});
                           window.parent.location.reload();//刷新父页面
                       }
                   }
@@ -196,7 +196,7 @@ layui.use('element', function(){
                   url: "${beidou}/read/restart/"+id,
                   success: function(data){
                       if (data.data == 1) {
-                          layer.msg('欢迎回来，加油!',{icon: 6,time:1000});
+                          layer.msg('欢迎回来，加油!',{icon: 6,time:3000});
                           window.parent.location.reload();//刷新父页面
                       }
                   }
