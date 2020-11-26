@@ -108,7 +108,7 @@
     <!-- 页脚 -->
     <%@ include file="../common/foot.jsp" %>
 </div>
-<script src="../js/layui.js"></script>
+<script src="../layui/layui.js"></script>
 <script>
 //JavaScript代码区域
 layui.use('element', function(){

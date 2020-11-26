@@ -14,26 +14,33 @@
 <!-- Body -->
 <body>
 	<ul class="layui-nav layui-nav-tree"  lay-filter="test">
-		   <li class="layui-nav-item layui-nav-itemed"><a href="${beidou }/index">个人控制台</a></li>	<!-- 默认打开当前模块 -->
-		   <li class="layui-nav-item">  
-	         <a class="#" href="javascript:;">阅读管理</a>
-	         <dl class="layui-nav-child">
-	           <dd><a href="${beidou}/read/list">阅读列表</a></dd>
-	         </dl>
-	       </li>
-	       <li class="layui-nav-item">  
-	         <a class="#" href="javascript:;">技能管理</a>
-	         <dl class="layui-nav-child">
-	           <dd><a href="${beidou}/study/list">技能列表</a></dd>
-	         </dl>
-	       </li>
-	       <li class="layui-nav-item">  
-	         <a class="#" href="javascript:;">用户管理</a>
-	         <dl class="layui-nav-child">
-	           <dd><a href="${beidou}/user/list">用户列表</a></dd>
-	           <%--<dd><a href="javascript:;">僵尸列表</a></dd>--%>
-	         </dl>
-	       </li>
+	   <li class="layui-nav-item layui-nav-itemed"><a href="${beidou }/index">个人控制台</a></li>	<!-- 默认打开当前模块 -->
+	   <li class="layui-nav-item">
+		 <a class="#" href="javascript:;">阅读管理</a>
+		 <dl class="layui-nav-child">
+		   <dd><a href="${beidou}/read/list">阅读列表</a></dd>
+		 </dl>
+	   </li>
+	   <li class="layui-nav-item">
+		 <a class="#" href="javascript:;">技能管理</a>
+		 <dl class="layui-nav-child">
+		   <dd><a href="${beidou}/study/list">技能列表</a></dd>
+		 </dl>
+	   </li>
+	   <li class="layui-nav-item">
+		 <a class="#" href="javascript:;">用户管理</a>
+		 <dl class="layui-nav-child">
+		   <dd><a href="${beidou}/user/list">用户列表</a></dd>
+		   <%--<dd><a href="javascript:;">僵尸列表</a></dd>--%>
+		 </dl>
+	   </li>
+		<li class="layui-nav-item">
+			<a class="#" href="javascript:;">系统管理</a>
+			<dl class="layui-nav-child">
+				<dd><a href="${beidou}/recycle/dataRecycle">回收站</a></dd>
+				<%--<dd><a href="javascript:;">僵尸列表</a></dd>--%>
+			</dl>
+		</li>
      </ul>
 </body>
 <!-- //Body -->
