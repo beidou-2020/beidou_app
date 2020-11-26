@@ -82,11 +82,14 @@
 		            	<span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-danger">在读</span>
 		            </c:if>
 		            <c:if test="${item.readFlag == 2}">
-		            	<span class="layui-btn layui-btn-radius layui-btn-xs">读完</span>
+		            	<span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-primary">读完</span>
 		            </c:if>
 		            <c:if test="${item.readFlag == 3}">
 		            	<span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-disabled">待读</span>
 		            </c:if>
+                    <c:if test="${item.readFlag == 4}">
+                        <span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-warm">暂停</span>
+                    </c:if>
 	            </td>
 	            <td class="td-manage">
 	              <a title="详情"  onclick="x_admin_show('详情','${beidou}/read/toDetailsView/${item.id }')" href="javascript:;">
@@ -98,6 +101,18 @@
 	              <a title="删除" onclick="member_del(this,'${item.id}')" href="javascript:;">
 	                <i class="layui-icon">&#xe640;</i>
 	              </a>
+                        <%--只能暂停在读的--%>
+                    <c:if test="${item.readFlag == 1}">
+                        <a onclick="member_stop(this,'${item.id}')" href="javascript:;"  title="暂停">
+                            <i class="layui-icon">&#xe616;</i>
+                        </a>
+                    </c:if>
+                        <%--只能开始暂停和待读状态的阅读信息--%>
+                    <c:if test="${item.readFlag == 4 || item.readFlag == 3}">
+                        <a onclick="member_turn_on(this,'${item.id}')" href="javascript:;"  title="开始">
+                            <i class="layui-icon">&#xe61f;</i>
+                        </a>
+                    </c:if>
 	            </td>
 	        </tr>
         </c:forEach>
@@ -156,29 +171,38 @@ layui.use('element', function(){
         });
       });
 
-       /*用户-停用*/
-      /* function member_stop(obj,id){
-          layer.confirm('确认要停用吗？',function(index){
-
-              if($(obj).attr('title')=='启用'){
-
-                //发异步把用户状态进行更改
-                $(obj).attr('title','停用')
-                $(obj).find('i').html('&#xe62f;');
-
-                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                layer.msg('已停用!',{icon: 5,time:1000});
-
-              }else{
-                $(obj).attr('title','启用')
-                $(obj).find('i').html('&#xe601;');
-
-                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                layer.msg('已启用!',{icon: 5,time:1000});
-              }
-              
+      /*阅读-暂停*/
+      function member_stop(obj,id){
+          layer.confirm('确认要暂停阅读吗？',function(){
+              //alert(id);
+              $.ajax({
+                  type: "post",
+                  url: "${beidou}/read/timeOut/"+id,
+                  success: function(data){
+                      if (data.data == 1) {
+                          layer.msg('阅读已经暂停!',{icon: 1,time:1000});
+                          window.parent.location.reload();//刷新父页面
+                      }
+                  }
+              });
           });
-      } */
+      }
+      /*阅读-开始*/
+      function member_turn_on(obj,id){
+          layer.confirm('确认要重新开始阅读吗？',function(){
+              //alert(id);
+              $.ajax({
+                  type: "post",
+                  url: "${beidou}/read/restart/"+id,
+                  success: function(data){
+                      if (data.data == 1) {
+                          layer.msg('欢迎回来，加油!',{icon: 6,time:1000});
+                          window.parent.location.reload();//刷新父页面
+                      }
+                  }
+              });
+          });
+      }
 
       /*用户-删除*/
       function member_del(obj,id){

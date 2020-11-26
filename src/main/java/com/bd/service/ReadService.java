@@ -63,5 +63,19 @@ public interface ReadService {
      */
     Integer batchDelete(String idListStr);
 
+    /**
+     * 暂停阅读
+     * @param id
+     * @return
+     */
+    Integer timeOutReadInfo(Long id);
+
+    /**
+     * 重新开始阅读
+     * @param id
+     * @return
+     */
+    Integer restartReadInfo(Long id);
+
 
 }

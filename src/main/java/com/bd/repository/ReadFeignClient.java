@@ -67,9 +67,26 @@ public interface ReadFeignClient {
     @ResponseBody
     Result countReadNumber();
 
+    /**
+     * 批量删除阅读信息
+     */
     @PostMapping("/batchDelete")
     @ResponseBody
     Result batchDelete(@RequestParam("idListStr") String idListStr);
+
+    /**
+     * 暂停阅读信息
+     */
+    @PostMapping("/timeOut/{id}")
+    @ResponseBody
+    Result timeOutReadInfo(@PathVariable(name = "id") Long id);
+
+    /**
+     * 重新开始阅读
+     */
+    @PostMapping("/restart/{id}")
+    @ResponseBody
+    Result restartReadInfo(@PathVariable(name = "id") Long id);
 
 
 }

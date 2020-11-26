@@ -11,6 +11,7 @@ import com.bd.entitys.parame.UpdateReadParam;
 import com.bd.entitys.query.ReadQuery;
 import com.bd.service.ReadService;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/read")
+@Slf4j
 public class ReadController {
 
     @Resource
@@ -132,6 +134,36 @@ public class ReadController {
             return Result.fail(ResultCode.RESPONSE_NULL.code(), ResultCode.RESPONSE_NULL.msg());
         }
         return Result.ok(data);
+    }
+
+    /**
+     * 暂停阅读信息
+     * @param id
+     * @return
+     */
+    @PostMapping("/timeOut/{id}")
+    @ResponseBody
+    public Result timeOutReadInfo(@PathVariable(name = "id") Long id){
+        Integer result = readService.timeOutReadInfo(id);
+        if (Objects.isNull(result)){
+            return Result.fail(ResultCode.ERROR.code(), ResultCode.ERROR.msg());
+        }
+        return Result.ok(result);
+    }
+
+    /**
+     * 重新开始阅读
+     * @param id
+     * @return
+     */
+    @PostMapping("/restart/{id}")
+    @ResponseBody
+    public Result restartReadInfo(@PathVariable(name = "id") Long id){
+        Integer result = readService.restartReadInfo(id);
+        if (Objects.isNull(result)){
+            return Result.fail(ResultCode.ERROR.code(), ResultCode.ERROR.msg());
+        }
+        return Result.ok(result);
     }
 
 

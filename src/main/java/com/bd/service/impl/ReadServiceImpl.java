@@ -165,4 +165,38 @@ public class ReadServiceImpl implements ReadService {
         Integer data = (Integer)result.getData();
         return data;
     }
+
+    @Override
+    public Integer timeOutReadInfo(Long id) {
+        Result result = readFeignClient.timeOutReadInfo(id);
+        if (Objects.isNull(result)){
+            log.error("调用timeOut方法返回的响应体为空, response: {}", JSONObject.toJSONString(result));
+            return null;
+        }
+
+        int code = result.getCode();
+        if (Objects.isNull(code) || code != 0){
+            log.error("调用timeOut方法出现异常, code: {}", JSONObject.toJSONString(code));
+            return null;
+        }
+        Integer data = (Integer)result.getData();
+        return data;
+    }
+
+    @Override
+    public Integer restartReadInfo(Long id) {
+        Result result = readFeignClient.restartReadInfo(id);
+        if (Objects.isNull(result)){
+            log.error("调用restart方法返回的响应体为空, response: {}", JSONObject.toJSONString(result));
+            return null;
+        }
+
+        int code = result.getCode();
+        if (Objects.isNull(code) || code != 0){
+            log.error("调用restart方法出现异常, code: {}", JSONObject.toJSONString(code));
+            return null;
+        }
+        Integer data = (Integer)result.getData();
+        return data;
+    }
 }
