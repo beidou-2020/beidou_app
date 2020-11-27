@@ -65,4 +65,14 @@ public class THistoricalReading {
      * 阅读内容分类
      */
     private Integer category;
+
+    /**
+     * 数据删除时间
+     */
+    private String removetime;
+
+    /**
+     * 数据删除操作者
+     */
+    private Long removeUser;
 }

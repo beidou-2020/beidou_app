@@ -27,7 +27,8 @@ public interface ReadFeignClient {
                                       @RequestParam(name = "author") String author,
                                       @RequestParam(name = "readFlag") Integer readFlag,
                                       @RequestParam(name = "begintime") String begintime,
-                                      @RequestParam(name = "endtime") String endtime);
+                                      @RequestParam(name = "endtime") String endtime,
+                                      @RequestParam(name = "validMark") Integer validMark);
 
     /**
      * 添加阅读信息

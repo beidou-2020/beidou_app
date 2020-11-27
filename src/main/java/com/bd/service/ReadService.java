@@ -20,6 +20,14 @@ public interface ReadService {
     PageInfo<THistoricalReading> pageByQuery(PageParam pageParam, ReadQuery query);
 
     /**
+     * 分页查询已经被删除的数据列表
+     * @param pageParam
+     * @param query
+     * @return
+     */
+    PageInfo<THistoricalReading> pageByRemove(PageParam pageParam, ReadQuery query);
+
+    /**
      * 添加阅读信息
      * @param param
      * @return

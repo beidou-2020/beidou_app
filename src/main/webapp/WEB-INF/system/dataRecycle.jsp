@@ -29,18 +29,15 @@
         <%--学习计划数据回收列表--%>
         <div class="x-body">
             <xblock>
-                <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"> </i>批量恢复</button>
+                <button class="layui-btn layui-btn-danger"><i class="layui-icon"> </i>学习计划</button>
                 <span class="x-right" style="line-height:40px">共有数据：${studyTotal } 条</span>
             </xblock>
             <table id="studyList" class="layui-table">
                 <thead>
                 <tr>
-                    <th>
-                        <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i>
-                        </div>
-                    </th>
                     <th>序号</th>
                     <th>主题</th>
+                    <th>计划开始时间</th>
                     <th>计划终止时间</th>
                     <th>删除时间</th>
                     <th>删除人</th>
@@ -49,12 +46,9 @@
                 <tbody>
                 <c:forEach var="item" items="${studyList }" varStatus="num">
                     <tr>
-                        <td>
-                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='${item.id}'><i
-                                    class="layui-icon">&#xe605;</i></div>
-                        </td>
                         <td>${num.count }</td>
                         <td>${item.title }</td>
+                        <td>${item.planBegintime } </td>
                         <td>${item.planEndtime }</td>
                         <td>${item.removetime }</td>
                         <td>${item.removeUser }</td>
@@ -67,29 +61,60 @@
                 </c:forEach>
                 </tbody>
             </table>
-            <%--分页容器--%>
-            <%--<div id="page" class="page"></div>--%>
-            <div class="page">
-                <div>
-                    <c:choose>
-                        <c:when test="${studyTotalPage == 1}">
-                            <span class="current">${studyTotalPage}</span>
-                        </c:when>
-                        <c:when test="${totalPage == currPageNumber}">
-                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage-1}">上一页</a>
-                        </c:when>
-                        <c:when test="${currPageNumber<totalPage && currPageNumber>1}">
-                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=1">首页</a>
-                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage-1}">上一页</a>
-                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage+1}">下一页</a>
-                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyTotalPage}">尾页</a>
-                        </c:when>
-                        <c:otherwise>
-                            <a class="prev" href="${beidou }/recycle/dataRecycle?currentPageNumber=${studyCurrPage+1}">下一页</a>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-            </div>
+        </div>
+
+        <%--读书计划数据回收列表--%>
+        <div class="x-body">
+            <xblock>
+                <button class="layui-btn layui-btn-danger"><i class="layui-icon"> </i>阅读计划</button>
+                <span class="x-right" style="line-height:40px">共有数据：${readTotal } 条</span>
+            </xblock>
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>书名</th>
+                    <th>作者</th>
+                    <th>阅读状态</th>
+                    <th>阅读开始时间</th>
+                    <th>阅读结束时间</th>
+                    <th>删除时间</th>
+                    <th>删除人</th>
+                    <th>操作</th>
+                </thead>
+                <tbody>
+                <c:forEach var="item" items="${readList }" varStatus="num">
+                    <tr>
+                        <td>${num.count }</td>
+                        <td>${item.bookName }</td>
+                        <td>${item.author }</td>
+                        <td class="td-status">
+                            <c:if test="${item.readFlag == 1}">
+                                <span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-danger">在读</span>
+                            </c:if>
+                            <c:if test="${item.readFlag == 2}">
+                                <span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-primary">读完</span>
+                            </c:if>
+                            <c:if test="${item.readFlag == 3}">
+                                <span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-disabled">待读</span>
+                            </c:if>
+                            <c:if test="${item.readFlag == 4}">
+                                <span class="layui-btn layui-btn-radius layui-btn-xs layui-btn-warm">暂停</span>
+                            </c:if>
+                        </td>
+                        <td>${item.begintime }</td>
+                        <td>${item.endtime }</td>
+                        <td>${item.removetime }</td>
+                        <td>${item.removeUser }</td>
+                        <td class="td-manage">
+                            <a title="恢复" onclick="member_del(this,'${item.id}')" href="javascript:;">
+                                <i class="layui-icon">&#xe609;</i>
+                            </a>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
         </div>
 
     </div>

@@ -41,7 +41,23 @@ public class ReadServiceImpl implements ReadService {
                 query.getAuthor(),
                 query.getReadFlag(),
                 query.getBegintime(),
-                query.getEndtime());
+                query.getEndtime(),
+                query.getValidMark());
+        return list;
+    }
+
+    @Override
+    public PageInfo<THistoricalReading> pageByRemove(PageParam pageParam, ReadQuery query) {
+        // valid_mark：0删除
+        query.setValidMark(0);
+        PageInfo<THistoricalReading> list = readFeignClient.list(pageParam.getCurrentPageNumber(),
+                pageParam.getPageSize(),
+                query.getBookName(),
+                query.getAuthor(),
+                query.getReadFlag(),
+                query.getBegintime(),
+                query.getEndtime(),
+                query.getValidMark());
         return list;
     }
 
