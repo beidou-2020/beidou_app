@@ -4,6 +4,7 @@ import com.bd.controller.common.Result;
 import com.bd.entitys.dto.AddUserDTO;
 import com.bd.entitys.dto.UpdateUserDTO;
 import com.bd.entitys.dto.UserLoginDTO;
+import com.bd.entitys.enumerate.ResultCode;
 import com.bd.entitys.model.User;
 import com.bd.entitys.parame.PageParam;
 import com.bd.entitys.parame.RegisterUserParame;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Objects;
 
 
 @Controller
@@ -93,7 +95,10 @@ public class UserController {
     @PostMapping("/add")
     @ResponseBody
     public Result add(@RequestBody @Valid AddUserDTO addUserDTO){
-        Result add = userService.add(addUserDTO);
+        User add = userService.add(addUserDTO);
+        if (Objects.isNull(add)){
+            return Result.fail(ResultCode.ERROR.code(), ResultCode.ERROR.msg());
+        }
         return Result.ok(add);
     }
 

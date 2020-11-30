@@ -1,20 +1,26 @@
 package com.bd.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bd.controller.common.Result;
 import com.bd.entitys.dto.AddUserDTO;
 import com.bd.entitys.dto.UpdateUserDTO;
 import com.bd.entitys.dto.UserLoginDTO;
+import com.bd.entitys.model.User;
 import com.bd.entitys.parame.PageParam;
 import com.bd.entitys.parame.RegisterUserParame;
 import com.bd.entitys.query.UserQuery;
 import com.bd.repository.UserClient;
 import com.bd.repository.UserFeignClient;
 import com.bd.service.UserService;
+import com.bd.utils.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Resource
@@ -44,8 +50,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result add(AddUserDTO addUserDTO) {
-        return userFeignClient.add(addUserDTO);
+    public User add(AddUserDTO addUserDTO) {
+        Result addResult = userFeignClient.add(addUserDTO);
+        if (Objects.isNull(addResult)) {
+            log.error("添加用户信息调用user-service服务的响应信息为空, response: {}", JSONObject.toJSONString(addResult));
+            return null;
+        }
+
+        int code = addResult.getCode();
+        String message = addResult.getMessage();
+        Object data = addResult.getData();
+        if (Objects.isNull(code) || 0!=code || Objects.isNull(data)){
+            log.error("添加用户信息调用user-service服务异常, msg: {}", message);
+            return null;
+        }
+
+        User user = JsonUtil.json2Object(JsonUtil.object2Json(data), User.class);
+        return user;
     }
 
     @Override

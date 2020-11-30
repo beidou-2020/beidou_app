@@ -4,6 +4,7 @@ import com.bd.controller.common.Result;
 import com.bd.entitys.dto.AddUserDTO;
 import com.bd.entitys.dto.UpdateUserDTO;
 import com.bd.entitys.dto.UserLoginDTO;
+import com.bd.entitys.model.User;
 import com.bd.entitys.parame.PageParam;
 import com.bd.entitys.parame.RegisterUserParame;
 import com.bd.entitys.query.UserQuery;
@@ -31,7 +32,7 @@ public interface UserService {
     /**
      * 添加用户信息
      */
-    Result add(AddUserDTO addUserDTO);
+    User add(AddUserDTO addUserDTO);
 
     /**
      * 更新用户信息
