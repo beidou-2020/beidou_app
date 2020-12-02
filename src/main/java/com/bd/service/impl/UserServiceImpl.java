@@ -83,4 +83,22 @@ public class UserServiceImpl implements UserService {
     public Result userDetails(Long id) {
         return userFeignClient.userDetails(id);
     }
+
+    @Override
+    public Integer batchDelete(String idListStr) {
+        Result result = userFeignClient.batchDelete(idListStr);
+        if (Objects.isNull(result)){
+            return null;
+        }
+        int code = result.getCode();
+        String message = result.getMessage();
+        Object data = result.getData();
+        if (Objects.isNull(code) || 0!=code || Objects.isNull(data)){
+            log.error("批量删除用户信息时调用user-service服务异常, msg: {}", message);
+            return null;
+        }
+
+        Integer batchDelData = JsonUtil.json2Object(JsonUtil.object2Json(data), Integer.class);
+        return batchDelData;
+    }
 }

@@ -50,4 +50,11 @@ public interface UserService {
      * 获取用户详情
      */
     Result userDetails(Long id);
+
+    /**
+     * 批量删除用户信息
+     * @param idListStr
+     * @return
+     */
+    Integer batchDelete(String idListStr);
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%@ include file="../../common/taglibs.jsp" %>
 <html>
 <head>
   <meta charset="utf-8">
@@ -45,7 +46,7 @@
             <th>
               <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
             </th>
-              <th>序号</th>
+              <th>用户ID</th>
             <th>账号</th>
             <th>昵称</th>
             <th>性别</th>
@@ -58,9 +59,9 @@
         <c:forEach var="item" items="${list }" varStatus="num">
         	<tr>
 	            <td>
-	              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='2'><i class="layui-icon">&#xe605;</i></div>
+	              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='${item.id}'><i class="layui-icon">&#xe605;</i></div>
 	            </td>
-	            <td>${num.count }</td>
+	            <td>${item.id }</td>
 	            <td>${item.account }</td>
 	            <td>${item.name }</td>
 	            <td>
@@ -126,6 +127,7 @@
     <%@ include file="../../common/foot.jsp" %>
 </div>
 <script src="../../layui/layui.js"></script>
+<script src="../../js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="../../js/xadmin.js"></script>
 <script>
 //JavaScript代码区域
@@ -200,15 +202,23 @@ layui.use('element', function(){
       }
 
 
-
-      function delAll (argument) {
-
+      /*批量删除*/
+      function delAll () {
         var data = tableCheck.getData();
-  
-        layer.confirm('确认要删除吗？'+data,function(index){
-            //捉到所有被选中的，发异步进行删除
-            layer.msg('删除成功', {icon: 1});
-            $(".layui-form-checked").not('.header').parents('tr').remove();
+        layer.confirm('确认要批量删除选中项吗？',function(){
+            $.ajax({
+                type: "post",
+                url: "${beidou}/user/batchDelete/" + data,
+                success: function(data){
+                    if(data.code == 0){
+                        layer.msg('操作成功', {icon: 1});
+                        window.parent.location.reload();    //刷新父页面
+                    }else {
+                        layer.msg('操作异常：' + data.message, {icon: 2});
+                        window.parent.location.reload();    //刷新父页面
+                    }
+                }
+            });
         });
       }
 </script>

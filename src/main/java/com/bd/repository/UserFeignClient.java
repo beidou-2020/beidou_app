@@ -50,4 +50,11 @@ public interface UserFeignClient {
     @GetMapping("/userDetails/{id}")
     @ResponseBody
     Result userDetails(@PathVariable(name = "id") Long id);
+
+    /**
+     * 批量删除用户信息
+     */
+    @PostMapping("/batchDelete/{idListStr}")
+    @ResponseBody
+    Result batchDelete(@PathVariable("idListStr") String idListStr);
 }

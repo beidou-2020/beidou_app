@@ -3,8 +3,6 @@ package com.bd.entitys.model;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.Date;
-
 @Data
 @ToString
 public class User {
@@ -51,11 +49,11 @@ public class User {
     /**
      * 注册时间
      */
-    private Date createtime;
+    private String createtime;
     
     /**
      * 更新时间
      */
-    private Date updatetime;
+    private String updatetime;
 
 }
