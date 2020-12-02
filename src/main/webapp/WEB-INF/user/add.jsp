@@ -140,6 +140,17 @@
                   <span class="x-red"></span>
               </div>
           </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span class="x-red"></span>用户类型
+                </label>
+                <div class="layui-input-inline">
+                    <select name="userType">
+                        <option value="0" >管理员</option>
+                        <option value="1" >普通</option>
+                    </select>
+                </div>
+            </div>
           <!-- <div class="layui-form-item">
               <label class="layui-form-label"><span class="x-red">*</span>角色</label>
               <div class="layui-input-block">
