@@ -16,6 +16,7 @@ public class WebMvcDateParamConf implements WebMvcConfigurer {
      */
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addFormatter(new DateFormatter("yyyy-MM-dd"));
+        DateFormatter dateFormatter = new DateFormatter("yyyy-MM-dd");
+        registry.addFormatter(dateFormatter);
     }
 }
