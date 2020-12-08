@@ -155,6 +155,32 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
         </dependency>
+
+        <!--集成redis-->
+        <!-- 注意：1.5版本的依赖和2.0的依赖不一样，注意1.5我记得名字里面应该没有“data”,
+                  2.0必须是“spring-boot-starter-data-redis” 这个才行 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <!-- 1.5的版本默认采用的连接池技术是jedis 2.0以上版本默认连接池是lettuce-->
+            <exclusions>
+                <exclusion>
+                    <groupId>io.lettuce</groupId>
+                    <artifactId>lettuce-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--集成jedis客户端-->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+        <!--spring2.0集成redis所需common-pool2 -->
+        <!-- 必须加上，jedis依赖此 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
     </dependencies>
 
 

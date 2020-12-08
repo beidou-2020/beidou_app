@@ -1,0 +1,18 @@
+spring:
+  redis:
+    host: 192.168.10.79
+    port: 9735
+    password: zxz
+    # 项目中也可以使用jedis客户端操作缓存数据库
+    jedis:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 50
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 1000
+    # 连接超时时间
+    timeout: 1000

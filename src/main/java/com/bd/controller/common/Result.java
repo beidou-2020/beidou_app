@@ -2,6 +2,7 @@ package com.bd.controller.common;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bd.entitys.enumerate.ResultCode;
+import com.bd.utils.JsonUtil;
 
 /**
  * 请求成功，则code返回0
@@ -38,8 +39,8 @@ public class Result<T> {
         return new Result(ResultCode.SUCCESS.code(), ResultCode.SUCCESS.msg(), data);
     }
 
-    public static Result ok(String message) {
-        return new Result(ResultCode.SUCCESS.code(), message, new JSONObject());
+    public static Result ok(String message, Object data) {
+        return new Result(ResultCode.SUCCESS.code(), message, JsonUtil.object2Json(data));
     }
 
     public static Result ok() {

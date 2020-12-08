@@ -3,6 +3,8 @@ server:
   port: 8080
 
 spring:
+  profiles:
+      active: dev
   # 注册到eureka的服务名称
   application:
     name: beidou-app
@@ -40,6 +42,7 @@ spring:
         defaultMaxPerRoute: 2000
     retry:
       times: 0
+
 
 # fegin启用http连接池支持
 feign:
