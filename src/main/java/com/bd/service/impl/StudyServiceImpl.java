@@ -1,6 +1,7 @@
 package com.bd.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bd.constant.RedisConstant;
 import com.bd.controller.common.Result;
 import com.bd.entitys.enumerate.ResultCode;
 import com.bd.entitys.model.TZxzStudy;
@@ -13,6 +14,7 @@ import com.bd.repository.FileClient;
 import com.bd.repository.StudyClient;
 import com.bd.service.StudyService;
 import com.bd.utils.FileUtils;
+import com.bd.utils.JsonUtil;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +24,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +35,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -41,6 +46,12 @@ public class StudyServiceImpl implements StudyService {
 
     @Resource
     private FileClient fileClient;
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public PageInfo<TZxzStudy> pageFindByQuery(StudyQuery queryStudy, PageParam pageQuery) {
@@ -164,6 +175,19 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public List<TZxzStudy> endStudyByCurrentMonth() {
+        try{
+            // 命中缓存操作
+            String endStudyListByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexEndStudyList);
+            if (StringUtils.isNotEmpty(endStudyListByRedisString)){
+                List<TZxzStudy> endStudyList = JsonUtil.jsonToList(endStudyListByRedisString,
+                        TZxzStudy.class);
+                log.info("首页信息——本月计划结束的数据命中缓存：{}", JSONObject.toJSONString(endStudyList));
+                return endStudyList;
+            }
+        }catch (Exception ex){
+            log.error("首页信息——本月计划结束的数据命中缓存异常", ex);
+        }
+
         Result result = studyClient.endStudyByCurrentMonth();
         if (Objects.isNull(result)){
             return null;
@@ -178,11 +202,31 @@ public class StudyServiceImpl implements StudyService {
             return null;
         }
         List data = (List<TZxzStudy>)result.getData();
+
+        try{
+            // 设置缓存(查询DB后), 过期时间为1小时
+            // redisTemplate.opsForValue().set(RedisConstant.indexEndStudyList, JsonUtil.object2Json(data));
+            redisTemplate.opsForValue().set(RedisConstant.indexEndStudyList, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
+        }catch (Exception ex){
+            log.error("设置缓存失败——首页信息(本月计划结束的数据: {})", JSONObject.toJSONString(data), ex);
+        }
         return data;
     }
 
     @Override
     public Integer countStudyNumber() {
+        try{
+            // 命中缓存操作
+            String studyNumByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexStudyNum);
+            if (StringUtils.isNotEmpty(studyNumByRedisString)){
+                int studyNum = Integer.parseInt(studyNumByRedisString);
+                log.info("首页信息——累计学习计划总数命中缓存：{}", JSONObject.toJSONString(studyNum));
+                return studyNum;
+            }
+        }catch (Exception ex){
+            log.error("首页信息——累计学习计划总数命中缓存异常", ex);
+        }
+
         Result result = studyClient.countStudyNumber();
         if (Objects.isNull(result)){
             return null;
@@ -197,6 +241,14 @@ public class StudyServiceImpl implements StudyService {
             return null;
         }
         Integer data = (Integer)result.getData();
+
+        try{
+            // 设置缓存(查询DB后), 过期时间为1小时
+            // redisTemplate.opsForValue().set(RedisConstant.indexStudyNum, JsonUtil.object2Json(data));
+            redisTemplate.opsForValue().set(RedisConstant.indexStudyNum, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
+        }catch (Exception ex){
+            log.error("设置缓存失败——首页信息(累计学习计划总数: {})", JSONObject.toJSONString(data), ex);
+        }
         return data;
     }
 

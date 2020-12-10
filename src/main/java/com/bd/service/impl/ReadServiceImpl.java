@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -174,8 +175,9 @@ public class ReadServiceImpl implements ReadService {
         List data = (List<THistoricalReading>)result.getData();
 
         try{
-            // 设置缓存(查询DB后)
-            redisTemplate.opsForValue().set(RedisConstant.indexTodayYearReadList, JsonUtil.object2Json(data));
+            // 设置缓存(查询DB后), 过期时间为1小时
+            // redisTemplate.opsForValue().set(RedisConstant.indexTodayYearReadList, JsonUtil.object2Json(data));
+            redisTemplate.opsForValue().set(RedisConstant.indexTodayYearReadList, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
         }catch (Exception ex){
             log.error("设置缓存失败——首页信息(阅读简报数据: {})", JSONObject.toJSONString(data), ex);
         }
@@ -208,8 +210,9 @@ public class ReadServiceImpl implements ReadService {
         Integer data = (Integer)result.getData();
 
         try{
-            // 设置缓存(查询DB后)
-            redisTemplate.opsForValue().set(RedisConstant.indexReadNum, JsonUtil.object2Json(data));
+            // 设置缓存(查询DB后), 过期时间为1小时
+            // redisTemplate.opsForValue().set(RedisConstant.indexReadNum, JsonUtil.object2Json(data));
+            redisTemplate.opsForValue().set(RedisConstant.indexReadNum, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
         }catch (Exception ex){
             log.error("设置缓存失败——首页信息(累计阅读总数: {})", JSONObject.toJSONString(data), ex);
         }
