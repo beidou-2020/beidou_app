@@ -3,9 +3,11 @@ package com.bd.entitys.model;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Data
 @ToString
-public class THistoricalReading {
+public class THistoricalReading implements Serializable {
     /**
      * ID
      */

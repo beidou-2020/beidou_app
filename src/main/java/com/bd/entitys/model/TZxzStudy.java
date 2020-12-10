@@ -3,11 +3,12 @@ package com.bd.entitys.model;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @ToString
-public class TZxzStudy {
+public class TZxzStudy implements Serializable {
     /**
      * ID
      */

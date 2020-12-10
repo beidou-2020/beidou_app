@@ -26,18 +26,22 @@ import redis.clients.jedis.JedisPoolConfig;
 import javax.annotation.Resource;
 
 @Configuration
-@EnableCaching
+@EnableCaching      //开启缓存注解的支持
 @Slf4j
 public class RedisConfig extends CachingConfigurerSupport {
 
     @Resource
     private JedisConnectionFactory jedisConnectionFactory;
 
+    /**
+     * 如果使用@Cacheable注解缓存方法级别的数据时没有显式的指定key的命名,
+     * 则会使用这里的配置方式来自动设置key的名字。
+     */
     @Bean
     public KeyGenerator keyGenerator() {
         // 设置自动key的生成规则，配置spring boot的注解，进行方法级别的缓存
         // 使用：进行分割，可以很多显示出层级关系
-        // 这里其实就是new了一个KeyGenerator对象，只是这是lambda表达式的写法，我感觉很好用，大家感兴趣可以去了解下
+        // 这里其实就是new了一个KeyGenerator对象
         return (target, method, params) -> {
             StringBuilder sb = new StringBuilder();
             sb.append(target.getClass().getName());
@@ -54,7 +58,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public CacheManager cacheManager() {
-        // 初始化缓存管理器，在这里我们可以缓存的整体过期时间什么的，我这里默认没有配置
+        // 初始化缓存管理器，在这里我们可以设置key的整体过期时间什么的，我这里默认没有配置
         log.info("初始化 -> [{}]", "CacheManager RedisCacheManager Start");
         RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(jedisConnectionFactory);

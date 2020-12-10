@@ -18,6 +18,7 @@ import com.bd.utils.JsonUtil;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,14 @@ public class ReadServiceImpl implements ReadService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    /**
+     * 将整个方法的返回结果进行缓存处理
+     * @param pageParam
+     * @param query
+     * @return
+     */
     @Override
+    @Cacheable("read_list_retData")
     public PageInfo<THistoricalReading> pageByQuery(PageParam pageParam, ReadQuery query) {
         PageInfo<THistoricalReading> list = readFeignClient.list(pageParam.getCurrentPageNumber(),
                 pageParam.getPageSize(),
