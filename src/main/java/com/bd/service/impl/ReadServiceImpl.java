@@ -1,6 +1,7 @@
 package com.bd.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bd.constant.RedisConstant;
 import com.bd.controller.common.Result;
 import com.bd.entitys.dto.AddReadDTO;
 import com.bd.entitys.dto.UpdateReadDTO;
@@ -13,9 +14,12 @@ import com.bd.repository.FileClient;
 import com.bd.repository.ReadFeignClient;
 import com.bd.service.ReadService;
 import com.bd.utils.BeanUtil;
+import com.bd.utils.JsonUtil;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +36,12 @@ public class ReadServiceImpl implements ReadService {
 
     @Resource
     private FileClient fileClient;
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public PageInfo<THistoricalReading> pageByQuery(PageParam pageParam, ReadQuery query) {
@@ -139,6 +149,19 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public List<THistoricalReading> todayYearByReadFlag() {
+        try{
+            // 命中缓存操作
+            String todayYearReadListByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexTodayYearReadList);
+            if (StringUtils.isNotEmpty(todayYearReadListByRedisString)){
+                List<THistoricalReading> todayYearReadList = JsonUtil.jsonToList(todayYearReadListByRedisString,
+                        THistoricalReading.class);
+                log.info("首页信息——阅读简报数据命中缓存：{}", JSONObject.toJSONString(todayYearReadList));
+                return todayYearReadList;
+            }
+        }catch (Exception ex){
+            log.error("首页信息——阅读简报数据命中缓存异常", ex);
+        }
+
         Result result = readFeignClient.todayYearByReadFlag();
         if (Objects.isNull(result)){
             return null;
@@ -149,11 +172,30 @@ public class ReadServiceImpl implements ReadService {
             return null;
         }
         List data = (List<THistoricalReading>)result.getData();
+
+        try{
+            // 设置缓存(查询DB后)
+            redisTemplate.opsForValue().set(RedisConstant.indexTodayYearReadList, JsonUtil.object2Json(data));
+        }catch (Exception ex){
+            log.error("设置缓存失败——首页信息(阅读简报数据: {})", JSONObject.toJSONString(data), ex);
+        }
         return data;
     }
 
     @Override
     public Integer countReadNumber() {
+        try{
+            // 命中缓存操作
+            String readNumByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexReadNum);
+            if (StringUtils.isNotEmpty(readNumByRedisString)){
+                int readNum = Integer.parseInt(readNumByRedisString);
+                log.info("首页信息——累计阅读总数命中缓存：{}", JSONObject.toJSONString(readNum));
+                return readNum;
+            }
+        }catch (Exception ex){
+            log.error("首页信息——累计阅读总数命中缓存异常", ex);
+        }
+
         Result result = readFeignClient.countReadNumber();
         if (Objects.isNull(result)){
             return null;
@@ -164,6 +206,13 @@ public class ReadServiceImpl implements ReadService {
             return null;
         }
         Integer data = (Integer)result.getData();
+
+        try{
+            // 设置缓存(查询DB后)
+            redisTemplate.opsForValue().set(RedisConstant.indexReadNum, JsonUtil.object2Json(data));
+        }catch (Exception ex){
+            log.error("设置缓存失败——首页信息(累计阅读总数: {})", JSONObject.toJSONString(data), ex);
+        }
         return data;
     }
 

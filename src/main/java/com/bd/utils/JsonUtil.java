@@ -1,15 +1,18 @@
 package com.bd.utils;
 
-import java.io.IOException;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.sf.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 对象和json字符串的转换工具类。
@@ -100,5 +103,16 @@ public class JsonUtil {
 
 		return null;
 	}
-	
+
+	/**
+	 * json 转 List<T>
+	 */
+	public static <T> List<T> jsonToList(String jsonString, Class<T> clazz) {
+		JSONArray jsonarray = JSONArray.fromObject(jsonString);
+		@SuppressWarnings("unchecked")
+		List<T> ts = (List<T>)JSONArray.toCollection(jsonarray, clazz);
+		return ts;
+	}
+
+
 }
