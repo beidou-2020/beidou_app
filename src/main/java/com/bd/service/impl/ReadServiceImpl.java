@@ -52,7 +52,7 @@ public class ReadServiceImpl implements ReadService {
      * @return
      */
     @Override
-    @Cacheable("read_list_retData")
+    @Cacheable(value = "read_list_retData", key = "{#query, #pageParam}")
     public PageInfo<THistoricalReading> pageByQuery(PageParam pageParam, ReadQuery query) {
         PageInfo<THistoricalReading> list = readFeignClient.list(pageParam.getCurrentPageNumber(),
                 pageParam.getPageSize(),
@@ -158,9 +158,10 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public List<THistoricalReading> todayYearByReadFlag() {
+        String keyName = RedisConstant.indexTodayYearReadList;
         try{
             // 命中缓存操作
-            String todayYearReadListByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexTodayYearReadList);
+            String todayYearReadListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
             if (StringUtils.isNotEmpty(todayYearReadListByRedisString)){
                 List<THistoricalReading> todayYearReadList = JsonUtil.jsonToList(todayYearReadListByRedisString,
                         THistoricalReading.class);
@@ -184,8 +185,13 @@ public class ReadServiceImpl implements ReadService {
 
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
-            // redisTemplate.opsForValue().set(RedisConstant.indexTodayYearReadList, JsonUtil.object2Json(data));
-            redisTemplate.opsForValue().set(RedisConstant.indexTodayYearReadList, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
+            // setIfAbsent如果key已经存在则不执行set
+            String value = JsonUtil.object2Json(data);
+            Boolean writeRedisResult = redisTemplate.opsForValue().
+                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            if (writeRedisResult){
+                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+            }
         }catch (Exception ex){
             log.error("设置缓存失败——首页信息(阅读简报数据: {})", JSONObject.toJSONString(data), ex);
         }
@@ -194,9 +200,10 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public Integer countReadNumber() {
+        String keyName = RedisConstant.indexReadNum;
         try{
             // 命中缓存操作
-            String readNumByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexReadNum);
+            String readNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);
             if (StringUtils.isNotEmpty(readNumByRedisString)){
                 int readNum = Integer.parseInt(readNumByRedisString);
                 log.info("首页信息——累计阅读总数命中缓存：{}", JSONObject.toJSONString(readNum));
@@ -219,8 +226,12 @@ public class ReadServiceImpl implements ReadService {
 
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
-            // redisTemplate.opsForValue().set(RedisConstant.indexReadNum, JsonUtil.object2Json(data));
-            redisTemplate.opsForValue().set(RedisConstant.indexReadNum, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
+            String value = JsonUtil.object2Json(data);
+            Boolean writeRedisResult = redisTemplate.opsForValue().
+                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            if (writeRedisResult){
+                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+            }
         }catch (Exception ex){
             log.error("设置缓存失败——首页信息(累计阅读总数: {})", JSONObject.toJSONString(data), ex);
         }

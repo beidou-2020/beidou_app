@@ -155,8 +155,10 @@ public class StudyServiceImpl implements StudyService {
                 // 4：行数据不为空的前提下，获取当前行的列数据
                 TZxzStudy dataInfo = new TZxzStudy();
                 dataInfo.setTitle(titleData); 										//主题
-                dataInfo.setPlanBegintime(row.getCell(1).getDateCellValue()); 		//计划开始时间
-                dataInfo.setPlanEndtime(row.getCell(2).getDateCellValue()); 		//计划截止时间
+                /*dataInfo.setPlanBegintime(row.getCell(1).getDateCellValue()); 		//计划开始时间
+                dataInfo.setPlanEndtime(row.getCell(2).getDateCellValue()); 		    //计划截止时间*/
+                dataInfo.setPlanBegintime(row.getCell(1).getStringCellValue());
+                dataInfo.setPlanEndtime(row.getCell(2).getStringCellValue());
                 dataInfo.setItems(row.getCell(3).getStringCellValue());	 			//学习项目
                 dataInfo.setRemark(row.getCell(4).getStringCellValue()); 			//备注
 
@@ -175,9 +177,10 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public List<TZxzStudy> endStudyByCurrentMonth() {
+        String keyName = RedisConstant.indexEndStudyList;
         try{
             // 命中缓存操作
-            String endStudyListByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexEndStudyList);
+            String endStudyListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
             if (StringUtils.isNotEmpty(endStudyListByRedisString)){
                 List<TZxzStudy> endStudyList = JsonUtil.jsonToList(endStudyListByRedisString,
                         TZxzStudy.class);
@@ -205,8 +208,12 @@ public class StudyServiceImpl implements StudyService {
 
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
-            // redisTemplate.opsForValue().set(RedisConstant.indexEndStudyList, JsonUtil.object2Json(data));
-            redisTemplate.opsForValue().set(RedisConstant.indexEndStudyList, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
+            String value = JsonUtil.object2Json(data);
+            Boolean writeRedisResult = redisTemplate.opsForValue().
+                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            if (writeRedisResult){
+                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+            }
         }catch (Exception ex){
             log.error("设置缓存失败——首页信息(本月计划结束的数据: {})", JSONObject.toJSONString(data), ex);
         }
@@ -215,9 +222,10 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public Integer countStudyNumber() {
+        String keyName = RedisConstant.indexStudyNum;
         try{
             // 命中缓存操作
-            String studyNumByRedisString = stringRedisTemplate.opsForValue().get(RedisConstant.indexStudyNum);
+            String studyNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);
             if (StringUtils.isNotEmpty(studyNumByRedisString)){
                 int studyNum = Integer.parseInt(studyNumByRedisString);
                 log.info("首页信息——累计学习计划总数命中缓存：{}", JSONObject.toJSONString(studyNum));
@@ -244,8 +252,12 @@ public class StudyServiceImpl implements StudyService {
 
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
-            // redisTemplate.opsForValue().set(RedisConstant.indexStudyNum, JsonUtil.object2Json(data));
-            redisTemplate.opsForValue().set(RedisConstant.indexStudyNum, JsonUtil.object2Json(data), 60, TimeUnit.MINUTES);
+            String value = JsonUtil.object2Json(data);
+            Boolean writeRedisResult = redisTemplate.opsForValue().
+                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            if (writeRedisResult){
+                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+            }
         }catch (Exception ex){
             log.error("设置缓存失败——首页信息(累计学习计划总数: {})", JSONObject.toJSONString(data), ex);
         }

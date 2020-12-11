@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/redisPool")
@@ -77,7 +78,12 @@ public class RedisController {
             }
 
             // stringRedisTemplate.opsForValue().set(READ_KEY_PREFIX+JSONObject.toJSONString(id), JSONObject.toJSONString(readInfo));
-            redisTemplate.opsForValue().set(READ_KEY_PREFIX+JSONObject.toJSONString(id), JSONObject.toJSONString(readInfo));
+            // redisTemplate.opsForValue().set(READ_KEY_PREFIX+JSONObject.toJSONString(id), JSONObject.toJSONString(readInfo), 1, TimeUnit.MINUTES);
+            Boolean setResult = redisTemplate.opsForValue().setIfAbsent(READ_KEY_PREFIX + JSONObject.toJSONString(id),
+                    JSONObject.toJSONString(readInfo), 1, TimeUnit.MINUTES);
+            if (!setResult){
+                log.warn("设置key：{}未成功", READ_KEY_PREFIX + JSONObject.toJSONString(id));
+            }
         }catch (Exception ex){
             log.error("set redis data error. param={}", JSONObject.toJSONString(id), ex);
         }

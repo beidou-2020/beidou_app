@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @ToString
@@ -32,22 +31,22 @@ public class TZxzStudy implements Serializable {
     /**
      * 计划开始时间
      */
-    private Date planBegintime;
+    private String planBegintime;
 
     /**
      * 计划结束时间
      */
-    private Date planEndtime;
+    private String planEndtime;
 
     /**
      * 创建时间
      */
-    private Date createtime;
+    private String createtime;
 
     /**
      * 更新时间
      */
-    private Date updatetime;
+    private String updatetime;
     
     /**
      * 有效标志：1启用、0删除
@@ -62,7 +61,7 @@ public class TZxzStudy implements Serializable {
     /**
      * 数据删除时间
      */
-    private Date removetime;
+    private String removetime;
 
     /**
      * 数据删除操作者
