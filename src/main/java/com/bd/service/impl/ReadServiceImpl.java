@@ -187,8 +187,7 @@ public class ReadServiceImpl implements ReadService {
             // 设置缓存(查询DB后), 过期时间为1小时
             // setIfAbsent如果key已经存在则不执行set
             String value = JsonUtil.object2Json(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().
-                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);
             }
@@ -227,8 +226,7 @@ public class ReadServiceImpl implements ReadService {
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
             String value = JsonUtil.object2Json(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().
-                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);
             }

@@ -209,8 +209,7 @@ public class StudyServiceImpl implements StudyService {
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
             String value = JsonUtil.object2Json(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().
-                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);
             }
@@ -253,8 +252,7 @@ public class StudyServiceImpl implements StudyService {
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
             String value = JsonUtil.object2Json(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().
-                    setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);
             }

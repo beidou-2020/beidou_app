@@ -17,7 +17,10 @@ public enum ResultCode {
     RESPONSE_CODE_NULL(508, "下游服务返回code为空"),
     RESPONSE_NULL(509, "下游服务response为空"),
     RESPONSE_FUSE(510, "下游服务调用异常，断路器自动返回结果"),
-    PARAM_WRONG(1001, "参数错误,请检查数据重新操作！");
+    PARAM_WRONG(1001, "参数错误,请检查数据重新操作！"),
+
+
+    REDIS_WRITE_CONFILET(6001, "redis异常：key写入冲突");
 
     ResultCode(int code , String msg) {
         this.code = code;

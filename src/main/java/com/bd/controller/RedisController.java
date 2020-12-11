@@ -45,11 +45,23 @@ public class RedisController {
                 log.info("getValue方法的参数为空：{}", JSONObject.toJSONString(id));
                 return Result.fail(ResultCode.PARAM_ERROR.code(), ResultCode.PARAM_ERROR.msg());
             }
-            String valueObject = stringRedisTemplate.opsForValue().get(READ_KEY_PREFIX+id);
-            // Object valueObject = redisTemplate.opsForValue().get(READ_KEY_PREFIX+id);
+
+            // 开始命中缓存
+            String keyName = READ_KEY_PREFIX + id;
+            String valueObject = stringRedisTemplate.opsForValue().get(keyName);
             if (Objects.isNull(valueObject)){
-                log.info("获取缓存数据：key={}的值为空", JSONObject.toJSONString(id));
-                return Result.ok("value is null");
+                log.info("get key={} is null, Start resetting：", JSONObject.toJSONString(id));
+                // 重新设置key的值
+                THistoricalReading readInfo = readService.findById(id);
+                if (Objects.isNull(readInfo)){
+                    log.error("根据id={}无法获取到指定信息", JSONObject.toJSONString(id));
+                }
+                String valueString = JSONObject.toJSONString(readInfo);
+                Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, valueString, 1, TimeUnit.MINUTES);
+                if (writeRedisResult){
+                    log.info("value reset successful. vlaue={}", valueString);
+                }
+                return Result.ok("value reset successful");
             }
             THistoricalReading value = JsonUtil.json2Object(valueObject, THistoricalReading.class);
             return Result.ok(value);
@@ -77,12 +89,12 @@ public class RedisController {
                 log.error("根据id={}无法获取到指定信息", JSONObject.toJSONString(id));
             }
 
-            // stringRedisTemplate.opsForValue().set(READ_KEY_PREFIX+JSONObject.toJSONString(id), JSONObject.toJSONString(readInfo));
-            // redisTemplate.opsForValue().set(READ_KEY_PREFIX+JSONObject.toJSONString(id), JSONObject.toJSONString(readInfo), 1, TimeUnit.MINUTES);
-            Boolean setResult = redisTemplate.opsForValue().setIfAbsent(READ_KEY_PREFIX + JSONObject.toJSONString(id),
-                    JSONObject.toJSONString(readInfo), 1, TimeUnit.MINUTES);
+            String keyName = READ_KEY_PREFIX + JSONObject.toJSONString(id);
+            String vlaue = JSONObject.toJSONString(readInfo);
+            Boolean setResult = redisTemplate.opsForValue().setIfAbsent(keyName, vlaue, 1, TimeUnit.MINUTES);
             if (!setResult){
-                log.warn("设置key：{}未成功", READ_KEY_PREFIX + JSONObject.toJSONString(id));
+                log.error("key：{}写入缓存发生冲突", keyName);
+                return Result.fail(ResultCode.REDIS_WRITE_CONFILET.code(), ResultCode.REDIS_WRITE_CONFILET.msg());
             }
         }catch (Exception ex){
             log.error("set redis data error. param={}", JSONObject.toJSONString(id), ex);
