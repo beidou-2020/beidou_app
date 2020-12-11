@@ -12,7 +12,7 @@ import com.bd.entitys.query.UserQuery;
 import com.bd.repository.UserClient;
 import com.bd.repository.UserFeignClient;
 import com.bd.service.UserService;
-import com.bd.utils.JsonUtil;
+import com.bd.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        User user = JsonUtil.json2Object(JsonUtil.object2Json(data), User.class);
+        User user = JsonUtils.toBean(JsonUtils.toJSONString(data), User.class);
         return user;
     }
 
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Integer batchDelData = JsonUtil.json2Object(JsonUtil.object2Json(data), Integer.class);
+        Integer batchDelData = JsonUtils.toBean(JsonUtils.toJSONString(data), Integer.class);
         return batchDelData;
     }
 }

@@ -14,7 +14,7 @@ import com.bd.repository.FileClient;
 import com.bd.repository.ReadFeignClient;
 import com.bd.service.ReadService;
 import com.bd.utils.BeanUtil;
-import com.bd.utils.JsonUtil;
+import com.bd.utils.JsonUtils;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -163,8 +163,8 @@ public class ReadServiceImpl implements ReadService {
             // 命中缓存操作
             String todayYearReadListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
             if (StringUtils.isNotEmpty(todayYearReadListByRedisString)){
-                List<THistoricalReading> todayYearReadList = JsonUtil.jsonToList(todayYearReadListByRedisString,
-                        THistoricalReading.class);
+                List<THistoricalReading> todayYearReadList = JsonUtils.
+                        toBeanList(todayYearReadListByRedisString, THistoricalReading.class);
                 log.info("首页信息——阅读简报数据命中缓存：{}", JSONObject.toJSONString(todayYearReadList));
                 return todayYearReadList;
             }
@@ -186,7 +186,7 @@ public class ReadServiceImpl implements ReadService {
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
             // setIfAbsent如果key已经存在则不执行set
-            String value = JsonUtil.object2Json(data);
+            String value = JsonUtils.toJSONString(data);
             Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);
@@ -225,7 +225,7 @@ public class ReadServiceImpl implements ReadService {
 
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
-            String value = JsonUtil.object2Json(data);
+            String value = JsonUtils.toJSONString(data);
             Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);

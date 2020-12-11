@@ -10,7 +10,7 @@ import com.bd.entitys.parame.PageParam;
 import com.bd.entitys.parame.RegisterUserParame;
 import com.bd.entitys.query.UserQuery;
 import com.bd.service.UserService;
-import com.bd.utils.JsonUtil;
+import com.bd.utils.JsonUtils;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -70,9 +70,9 @@ public class UserController {
     @GetMapping("/list")
     public ModelAndView list(UserQuery query, PageParam pageParam){
         Result result = userService.list(query, pageParam);
-        //如果直接将result.getData()转成PageInfo<User>会报错
-        String dataJson = JsonUtil.object2Json(result.getData());
-        PageInfo<User> pageInfo = JsonUtil.json2Object(dataJson, PageInfo.class);
+        // 如果直接将result.getData()转成PageInfo<User>会报错
+        String dataJson = JsonUtils.toJSONString(result.getData());
+        PageInfo<User> pageInfo = JsonUtils.toBean(dataJson, PageInfo.class);
         return new ModelAndView("/user/list").
                 addObject("list", pageInfo.getList()).
                 addObject("total", pageInfo.getTotal()).
@@ -114,7 +114,7 @@ public class UserController {
     public ModelAndView toEditView(@PathVariable(name = "id") Long id) {
         Result result = userService.userDetails(id);
         Object data = result.getData();
-        User user = JsonUtil.json2Object(JsonUtil.object2Json(data), User.class);
+        User user = JsonUtils.toBean(JsonUtils.toJSONString(data), User.class);
         return new ModelAndView("/user/edit").
                 addObject("userInfo", user);
     }

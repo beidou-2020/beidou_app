@@ -5,11 +5,12 @@ import com.bd.controller.common.Result;
 import com.bd.entitys.enumerate.ResultCode;
 import com.bd.entitys.model.THistoricalReading;
 import com.bd.service.ReadService;
-import com.bd.utils.JsonUtil;
+import com.bd.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +64,7 @@ public class RedisController {
                 }
                 return Result.ok("value reset successful");
             }
-            THistoricalReading value = JsonUtil.json2Object(valueObject, THistoricalReading.class);
+            THistoricalReading value = JsonUtils.toBean(valueObject, THistoricalReading.class);
             return Result.ok(value);
         }catch (Exception ex){
             log.error("get redis data error. key={}", JSONObject.toJSONString(id), ex);

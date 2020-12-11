@@ -14,7 +14,7 @@ import com.bd.repository.FileClient;
 import com.bd.repository.StudyClient;
 import com.bd.service.StudyService;
 import com.bd.utils.FileUtils;
-import com.bd.utils.JsonUtil;
+import com.bd.utils.JsonUtils;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -182,8 +182,8 @@ public class StudyServiceImpl implements StudyService {
             // 命中缓存操作
             String endStudyListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
             if (StringUtils.isNotEmpty(endStudyListByRedisString)){
-                List<TZxzStudy> endStudyList = JsonUtil.jsonToList(endStudyListByRedisString,
-                        TZxzStudy.class);
+            List<TZxzStudy> endStudyList =
+                JsonUtils.toBeanList(endStudyListByRedisString, TZxzStudy.class);
                 log.info("首页信息——本月计划结束的数据命中缓存：{}", JSONObject.toJSONString(endStudyList));
                 return endStudyList;
             }
@@ -208,7 +208,7 @@ public class StudyServiceImpl implements StudyService {
 
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
-            String value = JsonUtil.object2Json(data);
+            String value = JsonUtils.toJSONString(data);
             Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);
@@ -251,7 +251,7 @@ public class StudyServiceImpl implements StudyService {
 
         try{
             // 设置缓存(查询DB后), 过期时间为1小时
-            String value = JsonUtil.object2Json(data);
+            String value = JsonUtils.toJSONString(data);
             Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
             if (writeRedisResult){
                 log.info("key：{}===value：{}写入缓存成功", keyName, value);
