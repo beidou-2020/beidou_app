@@ -115,6 +115,7 @@ public class ReadServiceImpl implements ReadService {
     }
 
     @Override
+    @Cacheable(value = "read_info_retData", key = "{#id}")
     public THistoricalReading findById(Long id) {
         THistoricalReading reading = readFeignClient.readDetails(id);
         return reading;

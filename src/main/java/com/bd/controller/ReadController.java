@@ -33,7 +33,7 @@ public class ReadController {
     private FileConstant fileConstant;
 
     /**
-     * 阅读信息列表
+     * 阅读信息列表：缓存阻挡
      * @param pageParam
      * @param query
      * @return
@@ -70,11 +70,11 @@ public class ReadController {
     }
 
     /**
-     * 查看阅读详情
+     * 查看阅读详情：缓存阻挡
      * @param id
      * @return
      */
-    @RequestMapping(value = "/toDetailsView/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/toDetailsView/{id}", produces = "application/json;charset=utf-8")
     public ModelAndView toDetailsView(@PathVariable(name = "id") Long id) {
         THistoricalReading readInfo = readService.findById(id);
         return new ModelAndView("/read/details").

@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,7 @@ public class StudyServiceImpl implements StudyService {
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
+    @Cacheable(value = "study_list_retData", key = "{#queryStudy, #pageQuery}")
     public PageInfo<TZxzStudy> pageFindByQuery(StudyQuery queryStudy, PageParam pageQuery) {
         return studyClient.list(queryStudy, pageQuery);
     }
@@ -76,6 +78,7 @@ public class StudyServiceImpl implements StudyService {
     }
 
     @Override
+    @Cacheable(value = "study_info_retData", key = "{#id}")
     public TZxzStudy findById(Long id) {
         return studyClient.details(id);
     }

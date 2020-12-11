@@ -31,7 +31,7 @@ public class StudyController {
     private StudyService studyService;
 
     /**
-     * 学习计划列表
+     * 学习计划列表：缓存阻挡
      * @param queryStudy
      * @param pageParam
      * @return
@@ -79,7 +79,7 @@ public class StudyController {
     }
 
     /**
-     * 跳转到详情页面
+     * 跳转到详情页面：缓存阻挡
      * @param id
      * @return
      */
