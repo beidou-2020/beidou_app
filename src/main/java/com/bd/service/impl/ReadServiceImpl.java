@@ -13,6 +13,7 @@ import com.bd.entitys.query.ReadQuery;
 import com.bd.repository.FileClient;
 import com.bd.repository.ReadFeignClient;
 import com.bd.service.ReadService;
+import com.bd.service.common.ReadRedisKeyService;
 import com.bd.utils.BeanUtil;
 import com.bd.utils.JsonUtils;
 import com.github.pagehelper.PageInfo;
@@ -44,6 +45,9 @@ public class ReadServiceImpl implements ReadService {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Resource
+    private ReadRedisKeyService readRedisKeyService;
 
     /**
      * 将整个方法的返回结果进行缓存处理
@@ -111,6 +115,12 @@ public class ReadServiceImpl implements ReadService {
         //2、调用read-server服务保存阅读信息
         THistoricalReading insertRes = readFeignClient.add(addReadDTO);
         log.info("阅读计划保存成功：{}", JSONObject.toJSONString(insertRes));
+
+        //3、同步相关的缓存数据
+        Boolean syncResult = readRedisKeyService.syncIndexViewByReadKey();
+        if (syncResult){
+            log.info("新增阅读信息时：成功同步首页相关key");
+        }
         return insertRes;
     }
 
@@ -149,11 +159,22 @@ public class ReadServiceImpl implements ReadService {
 
         //2、调用read-server服务修改阅读信息
         THistoricalReading update = readFeignClient.update(updateReadDTO);
+
+        //3、同步相关的缓存数据
+        Boolean syncResult = readRedisKeyService.syncIndexViewByReadKey();
+        if (syncResult){
+            log.info("编辑阅读信息时：成功同步首页相关key");
+        }
         return update;
     }
 
     @Override
     public THistoricalReading deleteById(Long id) {
+        //同步相关的缓存数据
+        Boolean syncResult = readRedisKeyService.syncIndexViewByReadKey();
+        if (syncResult){
+            log.info("删除阅读信息时：成功同步首页相关key");
+        }
         return readFeignClient.deleteById(id);
     }
 
@@ -249,6 +270,12 @@ public class ReadServiceImpl implements ReadService {
             return null;
         }
         Integer data = (Integer)result.getData();
+
+        //同步相关的缓存数据
+        Boolean syncResult = readRedisKeyService.syncIndexViewByReadKey();
+        if (syncResult){
+            log.info("批量删除阅读信息时：成功同步首页相关key");
+        }
         return data;
     }
 
@@ -266,6 +293,12 @@ public class ReadServiceImpl implements ReadService {
             return null;
         }
         Integer data = (Integer)result.getData();
+
+        //同步相关的缓存数据
+        Boolean syncResult = readRedisKeyService.syncIndexViewByReadKey();
+        if (syncResult){
+            log.info("暂停阅读信息时：成功同步首页相关key");
+        }
         return data;
     }
 
@@ -283,6 +316,12 @@ public class ReadServiceImpl implements ReadService {
             return null;
         }
         Integer data = (Integer)result.getData();
+
+        //同步相关的缓存数据
+        Boolean syncResult = readRedisKeyService.syncIndexViewByReadKey();
+        if (syncResult){
+            log.info("重新开启阅读信息时：成功同步首页相关key");
+        }
         return data;
     }
 }

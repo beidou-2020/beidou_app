@@ -13,6 +13,7 @@ import com.bd.entitys.query.StudyQuery;
 import com.bd.repository.FileClient;
 import com.bd.repository.StudyClient;
 import com.bd.service.StudyService;
+import com.bd.service.common.StudyRedisKeyService;
 import com.bd.utils.FileUtils;
 import com.bd.utils.JsonUtils;
 import com.github.pagehelper.PageInfo;
@@ -54,6 +55,9 @@ public class StudyServiceImpl implements StudyService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    private StudyRedisKeyService studyRedisKeyService;
+
     @Override
     @Cacheable(value = "study_list_retData", key = "{#queryStudy, #pageQuery}")
     public PageInfo<TZxzStudy> pageFindByQuery(StudyQuery queryStudy, PageParam pageQuery) {
@@ -69,11 +73,21 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public TZxzStudy addStudyInfo(AddStudyParam param) {
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("添加计划时：成功同步首页相关key");
+        }
         return studyClient.add(param);
     }
 
     @Override
     public TZxzStudy deleteStudyPlan(Long id) {
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("删除计划时：成功同步首页相关key");
+        }
         return studyClient.delete(id);
     }
 
@@ -85,6 +99,11 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public TZxzStudy updateStudyById(UpdateStudyParam param) {
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("更新计划时：成功同步首页相关key");
+        }
         return studyClient.update(param);
     }
 
@@ -110,6 +129,12 @@ public class StudyServiceImpl implements StudyService {
         ImportStudyParam param = new ImportStudyParam();
         param.setList(studyList);
         Integer batchInsert = studyClient.batchInsert(param);
+
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("导入计划时：成功同步首页相关key");
+        }
 
         resultJsonObject.put("code", 1);
         resultJsonObject.put("msg", "文件数据导入成功");
@@ -175,6 +200,11 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public Result syncTaskStatus() {
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("手动同步计划状态时：成功同步首页相关key");
+        }
         return studyClient.syncTaskStatus();
     }
 
@@ -267,16 +297,31 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public Integer hangStudy(Long id) {
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("挂起计划时：成功同步首页相关key");
+        }
         return studyClient.hangStudy(id);
     }
 
     @Override
     public Integer trunOnStudy(Long id) {
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("重启计划时：成功同步首页相关key");
+        }
         return studyClient.trunOnStudy(id);
     }
 
     @Override
     public Integer batchDelete(String idListStr) {
+        // 同步相关的缓存数据
+        Boolean syncResult = studyRedisKeyService.syncIndexViewByStudyKey();
+        if (syncResult){
+            log.info("批量删除计划时：成功同步首页相关key");
+        }
         return studyClient.batchDelete(idListStr);
     }
 }
