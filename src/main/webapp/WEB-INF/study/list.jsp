@@ -94,14 +94,14 @@
 	              <a title="删除" onclick="member_del(this,'${item.id}')" href="javascript:;">
 	                <i class="layui-icon">&#xe640;</i>
 	              </a>
-                    <%--只能挂起执行中的--%>
-                    <c:if test="${item.planStatus == 1}">
+                    <%--只能挂起执行中或待执行的--%>
+                    <c:if test="${item.planStatus == 1 || item.planStatus == 0}">
                         <a onclick="member_stop(this,'${item.id}')" href="javascript:;"  title="挂起">
                             <i class="layui-icon">&#xe616;</i>
                         </a>
                     </c:if>
-                    <%--只能开启待执行的计划--%>
-                    <c:if test="${item.planStatus == 3 || item.planStatus == 0}">
+                    <%--只能开启已被挂起的计划--%>
+                    <c:if test="${item.planStatus == 3}">
                         <a onclick="member_turn_on(this,'${item.id}')" href="javascript:;"  title="开启">
                             <i class="layui-icon">&#xe61f;</i>
                         </a>
