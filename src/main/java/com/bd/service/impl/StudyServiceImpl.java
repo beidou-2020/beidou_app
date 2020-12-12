@@ -1,7 +1,7 @@
 package com.bd.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bd.constant.RedisConstant;
+import com.bd.constant.RedisKeyConstant;
 import com.bd.controller.common.Result;
 import com.bd.entitys.enumerate.ResultCode;
 import com.bd.entitys.model.TZxzStudy;
@@ -210,7 +210,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public List<TZxzStudy> endStudyByCurrentMonth() {
-        String keyName = RedisConstant.indexEndStudyList;
+        String keyName = RedisKeyConstant.indexEndStudyList;
         try{
             // 命中缓存操作
             String endStudyListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
@@ -254,7 +254,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public Integer countStudyNumber() {
-        String keyName = RedisConstant.indexStudyNum;
+        String keyName = RedisKeyConstant.indexStudyNum;
         try{
             // 命中缓存操作
             String studyNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);

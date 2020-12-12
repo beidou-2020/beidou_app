@@ -1,7 +1,7 @@
 package com.bd.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bd.constant.RedisConstant;
+import com.bd.constant.RedisKeyConstant;
 import com.bd.controller.common.Result;
 import com.bd.entitys.dto.AddReadDTO;
 import com.bd.entitys.dto.UpdateReadDTO;
@@ -180,7 +180,7 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public List<THistoricalReading> todayYearByReadFlag() {
-        String keyName = RedisConstant.indexTodayYearReadList;
+        String keyName = RedisKeyConstant.indexTodayYearReadList;
         try{
             // 命中缓存操作
             String todayYearReadListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
@@ -221,7 +221,7 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public Integer countReadNumber() {
-        String keyName = RedisConstant.indexReadNum;
+        String keyName = RedisKeyConstant.indexReadNum;
         try{
             // 命中缓存操作
             String readNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);

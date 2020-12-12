@@ -1,7 +1,7 @@
 package com.bd.service.common.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bd.constant.RedisConstant;
+import com.bd.constant.RedisKeyConstant;
 import com.bd.service.common.ReadRedisKeyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,10 +18,10 @@ public class ReadRedisKeyServiceImpl implements ReadRedisKeyService {
     @Override
     public Boolean syncIndexViewByReadKey() {
         // 今年读完的阅读数据
-        String indexTodayYearReadListKey = RedisConstant.indexTodayYearReadList;
+        String indexTodayYearReadListKey = RedisKeyConstant.indexTodayYearReadList;
 
         // 累计阅读量
-        String indexReadNumKey = RedisConstant.indexReadNum;
+        String indexReadNumKey = RedisKeyConstant.indexReadNum;
 
         try{
             if (redisTemplate.hasKey(indexTodayYearReadListKey)){

@@ -1,7 +1,7 @@
 package com.bd.service.common.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bd.constant.RedisConstant;
+import com.bd.constant.RedisKeyConstant;
 import com.bd.service.common.StudyRedisKeyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,10 +19,10 @@ public class StudyRedisLKeyServiceImpl implements StudyRedisKeyService {
     @Override
     public Boolean syncIndexViewByStudyKey() {
         // 本月结束的计划项
-        String indexEndStudyListKey = RedisConstant.indexEndStudyList;
+        String indexEndStudyListKey = RedisKeyConstant.indexEndStudyList;
 
         // 累计计划项
-        String indexStudyNumKey = RedisConstant.indexStudyNum;
+        String indexStudyNumKey = RedisKeyConstant.indexStudyNum;
 
         try{
             if (redisTemplate.hasKey(indexEndStudyListKey)){
