@@ -2,6 +2,7 @@ package com.bd.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bd.constant.RedisKeyConstant;
+import com.bd.constant.RedisSwitchConstant;
 import com.bd.controller.common.Result;
 import com.bd.entitys.enumerate.ResultCode;
 import com.bd.entitys.model.TZxzStudy;
@@ -57,6 +58,9 @@ public class StudyServiceImpl implements StudyService {
 
     @Resource
     private StudyRedisKeyService studyRedisKeyService;
+
+    @Resource
+    private RedisSwitchConstant redisSwitchConstant;
 
     @Override
     @Cacheable(value = "study_list_retData", key = "{#queryStudy, #pageQuery}")
@@ -211,17 +215,21 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public List<TZxzStudy> endStudyByCurrentMonth() {
         String keyName = RedisKeyConstant.indexEndStudyList;
-        try{
-            // 命中缓存操作
-            String endStudyListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
-            if (StringUtils.isNotEmpty(endStudyListByRedisString)){
-            List<TZxzStudy> endStudyList =
-                JsonUtils.toBeanList(endStudyListByRedisString, TZxzStudy.class);
-                log.info("首页信息——本月计划结束的数据命中缓存：{}", JSONObject.toJSONString(endStudyList));
-                return endStudyList;
+        // 缓存阻挡
+        Boolean keySwitch = redisSwitchConstant.getIndexEndStudyListKey();
+        if (keySwitch){
+            try{
+                // 命中缓存操作
+                String endStudyListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
+                if (StringUtils.isNotEmpty(endStudyListByRedisString)){
+                    List<TZxzStudy> endStudyList =
+                            JsonUtils.toBeanList(endStudyListByRedisString, TZxzStudy.class);
+                    log.info("首页信息——本月计划结束的数据命中缓存：{}", JSONObject.toJSONString(endStudyList));
+                    return endStudyList;
+                }
+            }catch (Exception ex){
+                log.error("首页信息——本月计划结束的数据命中缓存异常", ex);
             }
-        }catch (Exception ex){
-            log.error("首页信息——本月计划结束的数据命中缓存异常", ex);
         }
 
         Result result = studyClient.endStudyByCurrentMonth();
@@ -239,32 +247,38 @@ public class StudyServiceImpl implements StudyService {
         }
         List data = (List<TZxzStudy>)result.getData();
 
-        try{
-            // 设置缓存(查询DB后), 过期时间为1小时
-            String value = JsonUtils.toJSONString(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
-            if (writeRedisResult){
-                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+        if(keySwitch){
+            try{
+                // 设置缓存(查询DB后), 过期时间为1小时
+                String value = JsonUtils.toJSONString(data);
+                Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+                if (writeRedisResult){
+                    log.info("key：{}===value：{}写入缓存成功", keyName, value);
+                }
+            }catch (Exception ex){
+                log.error("设置缓存失败——首页信息(本月计划结束的数据: {})", JSONObject.toJSONString(data), ex);
             }
-        }catch (Exception ex){
-            log.error("设置缓存失败——首页信息(本月计划结束的数据: {})", JSONObject.toJSONString(data), ex);
         }
+
         return data;
     }
 
     @Override
     public Integer countStudyNumber() {
         String keyName = RedisKeyConstant.indexStudyNum;
-        try{
-            // 命中缓存操作
-            String studyNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);
-            if (StringUtils.isNotEmpty(studyNumByRedisString)){
-                int studyNum = Integer.parseInt(studyNumByRedisString);
-                log.info("首页信息——累计学习计划总数命中缓存：{}", JSONObject.toJSONString(studyNum));
-                return studyNum;
+        Boolean keySwitch = redisSwitchConstant.getIndexStudyNumKey();
+        if (keySwitch){
+            try{
+                // 命中缓存操作
+                String studyNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);
+                if (StringUtils.isNotEmpty(studyNumByRedisString)){
+                    int studyNum = Integer.parseInt(studyNumByRedisString);
+                    log.info("首页信息——累计学习计划总数命中缓存：{}", JSONObject.toJSONString(studyNum));
+                    return studyNum;
+                }
+            }catch (Exception ex){
+                log.error("首页信息——累计学习计划总数命中缓存异常", ex);
             }
-        }catch (Exception ex){
-            log.error("首页信息——累计学习计划总数命中缓存异常", ex);
         }
 
         Result result = studyClient.countStudyNumber();
@@ -282,16 +296,19 @@ public class StudyServiceImpl implements StudyService {
         }
         Integer data = (Integer)result.getData();
 
-        try{
-            // 设置缓存(查询DB后), 过期时间为1小时
-            String value = JsonUtils.toJSONString(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
-            if (writeRedisResult){
-                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+        if (keySwitch){
+            try{
+                // 设置缓存(查询DB后), 过期时间为1小时
+                String value = JsonUtils.toJSONString(data);
+                Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+                if (writeRedisResult){
+                    log.info("key：{}===value：{}写入缓存成功", keyName, value);
+                }
+            }catch (Exception ex){
+                log.error("设置缓存失败——首页信息(累计学习计划总数: {})", JSONObject.toJSONString(data), ex);
             }
-        }catch (Exception ex){
-            log.error("设置缓存失败——首页信息(累计学习计划总数: {})", JSONObject.toJSONString(data), ex);
         }
+
         return data;
     }
 

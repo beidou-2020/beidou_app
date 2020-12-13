@@ -2,6 +2,7 @@ package com.bd.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bd.constant.RedisKeyConstant;
+import com.bd.constant.RedisSwitchConstant;
 import com.bd.controller.common.Result;
 import com.bd.entitys.dto.AddReadDTO;
 import com.bd.entitys.dto.UpdateReadDTO;
@@ -48,6 +49,9 @@ public class ReadServiceImpl implements ReadService {
 
     @Resource
     private ReadRedisKeyService readRedisKeyService;
+
+    @Resource
+    private RedisSwitchConstant redisSwitchConstant;
 
     /**
      * 将整个方法的返回结果进行缓存处理
@@ -181,17 +185,21 @@ public class ReadServiceImpl implements ReadService {
     @Override
     public List<THistoricalReading> todayYearByReadFlag() {
         String keyName = RedisKeyConstant.indexTodayYearReadList;
-        try{
-            // 命中缓存操作
-            String todayYearReadListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
-            if (StringUtils.isNotEmpty(todayYearReadListByRedisString)){
-                List<THistoricalReading> todayYearReadList = JsonUtils.
-                        toBeanList(todayYearReadListByRedisString, THistoricalReading.class);
-                log.info("首页信息——阅读简报数据命中缓存：{}", JSONObject.toJSONString(todayYearReadList));
-                return todayYearReadList;
+        // 缓存阻挡开关
+        Boolean keySwitch = redisSwitchConstant.getIndexTodayYearReadListKey();
+        if (keySwitch){
+            try{
+                // 命中缓存操作
+                String todayYearReadListByRedisString = stringRedisTemplate.opsForValue().get(keyName);
+                if (StringUtils.isNotEmpty(todayYearReadListByRedisString)){
+                    List<THistoricalReading> todayYearReadList = JsonUtils.
+                            toBeanList(todayYearReadListByRedisString, THistoricalReading.class);
+                    log.info("首页信息——阅读简报数据命中缓存：{}", JSONObject.toJSONString(todayYearReadList));
+                    return todayYearReadList;
+                }
+            }catch (Exception ex){
+                log.error("首页信息——阅读简报数据命中缓存异常", ex);
             }
-        }catch (Exception ex){
-            log.error("首页信息——阅读简报数据命中缓存异常", ex);
         }
 
         Result result = readFeignClient.todayYearByReadFlag();
@@ -205,33 +213,40 @@ public class ReadServiceImpl implements ReadService {
         }
         List data = (List<THistoricalReading>)result.getData();
 
-        try{
-            // 设置缓存(查询DB后), 过期时间为1小时
-            // setIfAbsent如果key已经存在则不执行set
-            String value = JsonUtils.toJSONString(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
-            if (writeRedisResult){
-                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+        if (keySwitch){
+            try{
+                // 设置缓存(查询DB后), 过期时间为1小时
+                // setIfAbsent如果key已经存在则不执行set
+                String value = JsonUtils.toJSONString(data);
+                Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+                if (writeRedisResult){
+                    log.info("key：{}===value：{}写入缓存成功", keyName, value);
+                }
+            }catch (Exception ex){
+                log.error("设置缓存失败——首页信息(阅读简报数据: {})", JSONObject.toJSONString(data), ex);
             }
-        }catch (Exception ex){
-            log.error("设置缓存失败——首页信息(阅读简报数据: {})", JSONObject.toJSONString(data), ex);
         }
+
         return data;
     }
 
     @Override
     public Integer countReadNumber() {
         String keyName = RedisKeyConstant.indexReadNum;
-        try{
-            // 命中缓存操作
-            String readNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);
-            if (StringUtils.isNotEmpty(readNumByRedisString)){
-                int readNum = Integer.parseInt(readNumByRedisString);
-                log.info("首页信息——累计阅读总数命中缓存：{}", JSONObject.toJSONString(readNum));
-                return readNum;
+        // 缓存阻挡开关
+        Boolean keySwitch = redisSwitchConstant.getIndexReadNumKey();
+        if (keySwitch){
+            try{
+                // 命中缓存操作
+                String readNumByRedisString = stringRedisTemplate.opsForValue().get(keyName);
+                if (StringUtils.isNotEmpty(readNumByRedisString)){
+                    int readNum = Integer.parseInt(readNumByRedisString);
+                    log.info("首页信息——累计阅读总数命中缓存：{}", JSONObject.toJSONString(readNum));
+                    return readNum;
+                }
+            }catch (Exception ex){
+                log.error("首页信息——累计阅读总数命中缓存异常", ex);
             }
-        }catch (Exception ex){
-            log.error("首页信息——累计阅读总数命中缓存异常", ex);
         }
 
         Result result = readFeignClient.countReadNumber();
@@ -245,16 +260,19 @@ public class ReadServiceImpl implements ReadService {
         }
         Integer data = (Integer)result.getData();
 
-        try{
-            // 设置缓存(查询DB后), 过期时间为1小时
-            String value = JsonUtils.toJSONString(data);
-            Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
-            if (writeRedisResult){
-                log.info("key：{}===value：{}写入缓存成功", keyName, value);
+        if (keySwitch){
+            try{
+                // 设置缓存(查询DB后), 过期时间为1小时
+                String value = JsonUtils.toJSONString(data);
+                Boolean writeRedisResult = redisTemplate.opsForValue().setIfAbsent(keyName, value, 60, TimeUnit.MINUTES);
+                if (writeRedisResult){
+                    log.info("key：{}===value：{}写入缓存成功", keyName, value);
+                }
+            }catch (Exception ex){
+                log.error("设置缓存失败——首页信息(累计阅读总数: {})", JSONObject.toJSONString(data), ex);
             }
-        }catch (Exception ex){
-            log.error("设置缓存失败——首页信息(累计阅读总数: {})", JSONObject.toJSONString(data), ex);
         }
+
         return data;
     }
 

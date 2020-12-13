@@ -20,12 +20,22 @@ public class RedisSwitchConstant {
     /**
      * 首页key：今年读完的阅读简报
      */
-    private String indexTodayYearReadListKey;
+    private Boolean indexTodayYearReadListKey;
 
     /**
      * 首页key：累计的阅读总数
      */
-    private String indexReadNumKey;
+    private Boolean indexReadNumKey;
+
+    /**
+     * 首页key：本月计划结束的学习计划列表
+     */
+    private Boolean indexEndStudyListKey;
+
+    /**
+     * 首页key：累计计划总数
+     */
+    private Boolean indexStudyNumKey;
 
 
 }
