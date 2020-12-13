@@ -4,6 +4,7 @@ import com.bd.entitys.model.THistoricalReading;
 import com.bd.entitys.model.TZxzStudy;
 import com.bd.service.ReadService;
 import com.bd.service.StudyService;
+import com.bd.service.common.ConcurrentIndexService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/")
@@ -24,6 +26,9 @@ public class BeidouController {
 
     @Resource
     private StudyService studyService;
+
+    @Resource
+    private ConcurrentIndexService concurrentIndexService;
 
     /**
      * 系统登录页
@@ -44,7 +49,7 @@ public class BeidouController {
     }
 
     /**
-     * 加载个人控制台数据
+     * 加载个人控制台数据(串行获取)
      * @return
      */
     @RequestMapping(value = "index", method = RequestMethod.GET)
@@ -69,4 +74,34 @@ public class BeidouController {
 
         return new ModelAndView("redirect:/bd/error");
     }
+
+    /**
+     * 加载个人控制台数据(并发获取)
+     * @return
+     */
+    @RequestMapping(value = "indexByConcurrent", method = RequestMethod.GET)
+    public ModelAndView indexByConcurrent() {
+        try {
+            // 并发获取首页个人指标项数据
+            Map<String, Object> indexData = concurrentIndexService.getIndexData();
+
+            // 解析数据
+            List todayYearReadList = (List<THistoricalReading>) indexData.get("todayYearReadList");
+            Integer readNum = (Integer) indexData.get("readNum");
+            List endStudyList = (List<TZxzStudy>) indexData.get("endStudyList");
+            Integer studyNum = (Integer) indexData.get("studyNum");
+
+            return new ModelAndView("index").
+                    addObject("todayYearReadList", todayYearReadList).
+                    addObject("readNum", readNum).
+                    addObject("endStudyList", endStudyList).
+                    addObject("studyNum", studyNum);
+        } catch (Exception e) {
+            log.error("个人控制台数据加载出现异常：{}", ExceptionUtils.getFullStackTrace(e));
+        }
+
+        return new ModelAndView("redirect:/bd/error");
+    }
+
+
 }

@@ -14,7 +14,8 @@
 <!-- Body -->
 <body>
 	<ul class="layui-nav layui-nav-tree"  lay-filter="test">
-	   <li class="layui-nav-item layui-nav-itemed"><a href="${beidou }/index">个人控制台</a></li>	<!-- 默认打开当前模块 -->
+		<li class="layui-nav-item layui-nav-itemed"><a href="${beidou }/index">个人控制台</a></li>
+	   <%--<li class="layui-nav-item layui-nav-itemed"><a href="${beidou }/indexByConcurrent">个人控制台</a></li>--%>	<!-- 默认打开当前模块 -->
 	   <li class="layui-nav-item">
 		 <a class="#" href="javascript:;">阅读管理</a>
 		 <dl class="layui-nav-child">
