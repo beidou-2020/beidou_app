@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -91,7 +92,13 @@ public class ConcurrentIndexServiceImpl implements ConcurrentIndexService {
             // 批量提交任务(携带返回值的)
             List<Future<List>> futureList = IndexThreadPool.indexPool.invokeAll(taskList);
             for (Future<List> itemFu : futureList){
-                log.info("个人控制台并发执行的结果数据：{}", JSONObject.toJSONString(itemFu.get()));
+                try{
+                    // 获取数据设置超时时长(最长为200毫秒)，超时后任务不会终止但是会返回Callable默认分支的结果
+                    log.info("个人控制台并发执行的结果数据：{}",
+                            JSONObject.toJSONString(itemFu.get(200, TimeUnit.MILLISECONDS)));
+                } catch (Exception ex){
+                    log.error("获取结果异常，任务没有执行结束", ex);
+                }
             }
         }catch (Exception ex){
             log.error("并发获取个人控制台数据异常", ex);
