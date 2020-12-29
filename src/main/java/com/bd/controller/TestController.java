@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/test")
+@RequestMapping(value = "/app")
 public class TestController {
 
 

@@ -1,6 +1,6 @@
 spring:
   redis:
-    host: 192.168.10.79
+    host: 192.168.9.79
     port: 9735
     password: zxz
     # 项目中也可以使用jedis客户端操作缓存数据库

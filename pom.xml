@@ -227,10 +227,12 @@
     </repositories>
 
     <build>
+        <!--Maven插件版本修改必须为1.4.2.RELEASE，只有使用这个版本打jar包时才能解析jsp。-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.4.2.RELEASE</version>
             </plugin>
         </plugins>
 

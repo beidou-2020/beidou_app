@@ -9,6 +9,8 @@
 
     <!--定义日志文件的存储地址，勿在LogBack的配置中使用相对路径 -->
     <property name="log_home" value="C:/zxz_log/java/beidou_app" />
+    <!--生产环境-->
+    <!--<property name="log_home" value="/app/logs/beidou_app" />-->
     <property name="log_pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
     
     <!-- 控制台输出 -->
