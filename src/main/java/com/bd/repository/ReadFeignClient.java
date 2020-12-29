@@ -5,16 +5,14 @@ import com.bd.entitys.dto.AddReadDTO;
 import com.bd.entitys.dto.UpdateReadDTO;
 import com.bd.entitys.model.THistoricalReading;
 import com.github.pagehelper.PageInfo;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Component
+//@Component
 // 用于通知Feign组件对该接口进行代理
 // name的值应该要和注册中心中被调用服务注册成功后的设置的服务名保持一致
-@FeignClient(name = "read-service-001", path = "/read")
+//@FeignClient(name = "read-service-001", path = "/read")
 public interface ReadFeignClient {
 
     /**

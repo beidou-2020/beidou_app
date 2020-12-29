@@ -12,7 +12,7 @@ import com.bd.entitys.parame.PageParam;
 import com.bd.entitys.parame.UpdateReadParam;
 import com.bd.entitys.query.ReadQuery;
 import com.bd.repository.FileClient;
-import com.bd.repository.ReadFeignClient;
+import com.bd.repository.ReadClient;
 import com.bd.service.ReadService;
 import com.bd.service.common.ReadRedisKeyService;
 import com.bd.utils.BeanUtil;
@@ -35,8 +35,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ReadServiceImpl implements ReadService {
 
+    /*@Resource
+    private ReadFeignClient readFeignClient;*/
+
     @Resource
-    private ReadFeignClient readFeignClient;
+    private ReadClient readClient;
 
     @Resource
     private FileClient fileClient;
@@ -62,30 +65,32 @@ public class ReadServiceImpl implements ReadService {
     @Override
     @Cacheable(value = "read_list_retData", key = "{#query, #pageParam}")
     public PageInfo<THistoricalReading> pageByQuery(PageParam pageParam, ReadQuery query) {
-        PageInfo<THistoricalReading> list = readFeignClient.list(pageParam.getCurrentPageNumber(),
+        /*PageInfo<THistoricalReading> pageInfo = readFeignClient.list(pageParam.getCurrentPageNumber(),
                 pageParam.getPageSize(),
                 query.getBookName(),
                 query.getAuthor(),
                 query.getReadFlag(),
                 query.getBegintime(),
                 query.getEndtime(),
-                query.getValidMark());
-        return list;
+                query.getValidMark());*/
+        PageInfo<THistoricalReading> pageInfo = readClient.list(pageParam, query);
+        return pageInfo;
     }
 
     @Override
     public PageInfo<THistoricalReading> pageByRemove(PageParam pageParam, ReadQuery query) {
         // valid_mark：0删除
         query.setValidMark(0);
-        PageInfo<THistoricalReading> list = readFeignClient.list(pageParam.getCurrentPageNumber(),
+        /*PageInfo<THistoricalReading> pageInfo = readFeignClient.list(pageParam.getCurrentPageNumber(),
                 pageParam.getPageSize(),
                 query.getBookName(),
                 query.getAuthor(),
                 query.getReadFlag(),
                 query.getBegintime(),
                 query.getEndtime(),
-                query.getValidMark());
-        return list;
+                query.getValidMark());*/
+        PageInfo<THistoricalReading> pageInfo = readClient.list(pageParam, query);
+        return pageInfo;
     }
 
     @Override
@@ -117,7 +122,8 @@ public class ReadServiceImpl implements ReadService {
         }
 
         //2、调用read-server服务保存阅读信息
-        THistoricalReading insertRes = readFeignClient.add(addReadDTO);
+        /*THistoricalReading insertRes = readFeignClient.add(addReadDTO);*/
+        THistoricalReading insertRes = readClient.add(addReadDTO);
         log.info("阅读计划保存成功：{}", JSONObject.toJSONString(insertRes));
 
         //3、同步相关的缓存数据
@@ -131,7 +137,8 @@ public class ReadServiceImpl implements ReadService {
     @Override
     @Cacheable(value = "read_info_retData", key = "{#id}")
     public THistoricalReading findById(Long id) {
-        THistoricalReading reading = readFeignClient.readDetails(id);
+        /*THistoricalReading reading = readFeignClient.readDetails(id);*/
+        THistoricalReading reading = readClient.readDetails(id);
         return reading;
     }
 
@@ -162,7 +169,8 @@ public class ReadServiceImpl implements ReadService {
         }
 
         //2、调用read-server服务修改阅读信息
-        THistoricalReading update = readFeignClient.update(updateReadDTO);
+        /*THistoricalReading update = readFeignClient.update(updateReadDTO);*/
+        THistoricalReading update = readClient.update(updateReadDTO);
 
         //3、同步相关的缓存数据
         Boolean syncResult = readRedisKeyService.syncIndexViewByReadKey();
@@ -179,7 +187,8 @@ public class ReadServiceImpl implements ReadService {
         if (syncResult){
             log.info("删除阅读信息时：成功同步首页相关key");
         }
-        return readFeignClient.deleteById(id);
+        /*return readFeignClient.deleteById(id);*/
+        return readClient.deleteById(id);
     }
 
     @Override
@@ -202,7 +211,8 @@ public class ReadServiceImpl implements ReadService {
             }
         }
 
-        Result result = readFeignClient.todayYearByReadFlag();
+        /*Result result = readFeignClient.todayYearByReadFlag();*/
+        Result result = readClient.todayYearByReadFlag();
         if (Objects.isNull(result)){
             return null;
         }
@@ -249,7 +259,8 @@ public class ReadServiceImpl implements ReadService {
             }
         }
 
-        Result result = readFeignClient.countReadNumber();
+        /*Result result = readFeignClient.countReadNumber();*/
+        Result result = readClient.countReadNumber();
         if (Objects.isNull(result)){
             return null;
         }
@@ -278,7 +289,8 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public Integer batchDelete(String idListStr) {
-        Result result = readFeignClient.batchDelete(idListStr);
+        /*Result result = readFeignClient.batchDelete(idListStr);*/
+        Result result = readClient.batchDelete(idListStr);
         if (Objects.isNull(result)){
             return null;
         }
@@ -299,7 +311,8 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public Integer timeOutReadInfo(Long id) {
-        Result result = readFeignClient.timeOutReadInfo(id);
+        /*Result result = readFeignClient.timeOutReadInfo(id);*/
+        Result result = readClient.timeOutReadInfo(id);
         if (Objects.isNull(result)){
             log.error("调用timeOut方法返回的响应体为空, response: {}", JSONObject.toJSONString(result));
             return null;
@@ -322,7 +335,8 @@ public class ReadServiceImpl implements ReadService {
 
     @Override
     public Integer restartReadInfo(Long id) {
-        Result result = readFeignClient.restartReadInfo(id);
+        /*Result result = readFeignClient.restartReadInfo(id);*/
+        Result result = readClient.restartReadInfo(id);
         if (Objects.isNull(result)){
             log.error("调用restart方法返回的响应体为空, response: {}", JSONObject.toJSONString(result));
             return null;

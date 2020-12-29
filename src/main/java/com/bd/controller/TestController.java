@@ -13,11 +13,10 @@ public class TestController {
 
     /**
      * 检测服务运行状态
-     * @param parame
      * @return
      */
     @GetMapping(value = "/health", produces = "application/json;charset=utf-8")
-    public String health(String parame){
-        return parame;
+    public String health(){
+        return "server success";
     }
 }
