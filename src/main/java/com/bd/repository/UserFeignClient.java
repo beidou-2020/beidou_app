@@ -3,10 +3,9 @@ package com.bd.repository;
 import com.bd.controller.common.Result;
 import com.bd.entitys.dto.AddUserDTO;
 import com.bd.entitys.dto.UpdateUserDTO;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "user-service", path = "/user")
+//@FeignClient(name = "user-service", path = "/user")
 public interface UserFeignClient {
 
     /**

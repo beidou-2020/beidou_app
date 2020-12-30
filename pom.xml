@@ -151,10 +151,10 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!--集成consul注册中心-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-discovery</artifactId>
-        </dependency>
+        </dependency>-->
         <!-- 集成hystrix -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

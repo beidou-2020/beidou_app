@@ -10,7 +10,6 @@ import com.bd.entitys.parame.PageParam;
 import com.bd.entitys.parame.RegisterUserParame;
 import com.bd.entitys.query.UserQuery;
 import com.bd.repository.UserClient;
-import com.bd.repository.UserFeignClient;
 import com.bd.service.UserService;
 import com.bd.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +25,8 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserClient userClient;
 
-    @Resource
-    private UserFeignClient userFeignClient;
+    /*@Resource
+    private UserFeignClient userFeignClient;*/
 
     @Override
     public Result login(UserLoginDTO userLoginDTO) {
@@ -41,17 +40,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result list(UserQuery query, PageParam pageParam) {
-        return userFeignClient.list(pageParam.getCurrentPageNumber(),
+        /*return userFeignClient.list(pageParam.getCurrentPageNumber(),
                 pageParam.getPageSize(),
                 query.getAccount(),
                 query.getName(),
                 query.getGender(),
-                query.getUserType());
+                query.getUserType());*/
+
+        return userClient.list(pageParam, query);
     }
 
     @Override
     public User add(AddUserDTO addUserDTO) {
-        Result addResult = userFeignClient.add(addUserDTO);
+        /*Result addResult = userFeignClient.add(addUserDTO);*/
+        Result addResult = userClient.add(addUserDTO);
         if (Objects.isNull(addResult)) {
             log.error("添加用户信息调用user-service服务的响应信息为空, response: {}", JSONObject.toJSONString(addResult));
             return null;
@@ -71,22 +73,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result update(UpdateUserDTO updateUserDTO) {
-        return userFeignClient.update(updateUserDTO);
+        /*return userFeignClient.update(updateUserDTO);*/
+        return userClient.update(updateUserDTO);
     }
 
     @Override
     public Result delete(Long id) {
-        return userFeignClient.delete(id);
+        /*return userFeignClient.delete(id);*/
+        return userClient.delete(id);
     }
 
     @Override
     public Result userDetails(Long id) {
-        return userFeignClient.userDetails(id);
+        /*return userFeignClient.userDetails(id);*/
+        return userClient.userDetails(id);
     }
 
     @Override
     public Integer batchDelete(String idListStr) {
-        Result result = userFeignClient.batchDelete(idListStr);
+        /*Result result = userFeignClient.batchDelete(idListStr);*/
+        Result result = userClient.batchDelete(idListStr);
         if (Objects.isNull(result)){
             return null;
         }
