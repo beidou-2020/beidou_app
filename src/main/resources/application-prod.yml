@@ -19,7 +19,7 @@ spring:
 
 # 文件上传和回显的路径管理
 filepath:
-  tempDir: /app/temp
-  uploadServerPath: /app/files/user_upload_path
+  tempDir: /app/temp/
+  uploadServerPath: /app/files/user_upload_path/
   storageVirtualPath: /read/file/**
   accessPath: read/file/

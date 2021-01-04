@@ -9,9 +9,9 @@ import org.springframework.context.annotation.PropertySources;
 
 @SpringBootApplication
 //加载自定义配置文件(可以加载多个)
-// @PropertySources({@PropertySource(value = "classpath:rest_dev.properties")})
+@PropertySources({@PropertySource(value = "classpath:rest_dev.properties")})
 // 本地生产环境
-@PropertySources({@PropertySource(value = "classpath:rest_prod.properties")})
+// @PropertySources({@PropertySource(value = "classpath:rest_prod.properties")})
 // @EnableDiscoveryClient
 // @EnableFeignClients         // Fegin客户端
 @EnableHystrix              //开启Hystrix断路器
