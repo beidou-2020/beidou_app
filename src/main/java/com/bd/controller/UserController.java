@@ -44,7 +44,8 @@ public class UserController {
         }
 
         //success：重定向到首页
-        return new ModelAndView("redirect:/index");
+        //return new ModelAndView("redirect:/index");
+        return new ModelAndView("redirect:/indexByConcurrent");
     }
 
     /**

@@ -31,6 +31,17 @@ public class StudyController {
     private StudyService studyService;
 
     /**
+     *
+     * @return
+     */
+    @PostMapping("/exportStudyPlan")
+    @ResponseBody
+    public Result exportStudyPlan(){
+
+        return Result.ok();
+    }
+
+    /**
      * 学习计划列表：缓存阻挡
      * @param queryStudy
      * @param pageParam

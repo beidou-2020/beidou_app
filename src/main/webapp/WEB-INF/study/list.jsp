@@ -43,6 +43,7 @@
         <button class="layui-btn" onclick="x_admin_show('添加','${zxz}/study/toAddView')"><i class="layui-icon"> </i>添加</button>
         <button type="button" class="layui-btn" id="importStudyPlan"><i class="layui-icon">&#xe62f;</i>导入</button>
           <button type="button" class="layui-btn" id="syncTaskStatus"><i class="layui-icon">&#xe669;</i>同步</button>
+          <button type="button" class="layui-btn" id="exportStudyPlan"><i class="layui-icon">&#xe601;</i>导出</button>
         <span class="x-right" style="line-height:40px">共有数据：${total } 条</span>
       </xblock>
       <table id="studyList" class="layui-table">
@@ -172,6 +173,7 @@
     });
 </script>--%>
 <script>
+    /*同步计划状态*/
     $("#syncTaskStatus").click(function(){
         $.ajax({
             type: "get",
@@ -183,6 +185,17 @@
                 } else {
                     layer.alert('服务器异常', {icon: 5});
                 }
+            }
+        });
+    });
+
+    /*导出学习计划列表*/
+    $("#exportStudyPlan").click(function(){
+        $.ajax({
+            type: "post",
+            url: "",
+            success: function(data){
+
             }
         });
     });
